@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # Contraseña del usuario root
+      MYSQL_DATABASE: ${MYSQL_DATABASE} # Base de datos inicial
+      MYSQL_USER: ${MYSQL_USER} # Usuario adicional
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD} # Contraseña del usuario adicional
+    ports:
+      - "3306:3306"
+    volumes:
+      - './mysql_data:/var/lib/mysql'
