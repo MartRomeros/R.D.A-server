@@ -1,0 +1,84 @@
+import { Request, Response } from "express"
+import usuario from '../models/user'
+import { Usuario } from '../models/interfaces'
+import { comparePasswords, generateToken, hashPassword } from "../services/authServices"
+
+
+//LOGIN
+export const login = async (req: Request, res: Response): Promise<void> => {
+    const { email, password } = req.body
+
+    if (!email) {
+        res.status(400).json({ message: 'email es obligatorio!' })
+        return
+    }
+
+    if (!password) {
+        res.status(400).json({ message: 'contrasena es obligatoria!' }) //cambiar a contrasenna (ESP)
+        return
+    }
+
+    try {
+        const user = await usuario.findUnique({ where: { email } })
+
+        if (!user) {
+            res.status(404).json({ message: 'Usuario no encontrado!' })
+            return
+        }
+
+        const iUser: Usuario = user
+        const passwordMatch = await comparePasswords(password, user.password!)
+
+        if (!comparePasswords) {
+            res.status(401).json({ message: 'credenciales incorrectas' })
+            return
+        }
+
+        const token = generateToken(iUser)
+        res.status(200).json({ message: 'login exitoso', token, tipoUsuario: iUser.tipo_usuario })
+        
+    } catch (error: any) {
+        res.status(500).json({ message: 'error en el server' })
+    }
+
+}
+
+//REGISTRO
+export const registrar = async (req: Request, res: Response): Promise<void> => {
+
+    const { run, nombre, apellidoPaterno, apellidoMaterno, fono, email, tipoUsuario } = req.body
+    const claves = Object.keys(req.body)
+
+    for (let i = 0; i < claves.length; i++) {
+        if (!req.body[claves[i]]) {
+            res.status(400).json({ message: `Campo ${claves[i]} incompleto!` })
+            return
+        }
+    }
+
+    const passwordProvisoria: string = apellidoPaterno[0] + run
+
+    try {
+
+        const hashedPassword = await hashPassword(passwordProvisoria)
+        await usuario.create({
+            data: {
+                run: run,
+                nombre: nombre,
+                apellido_materno: apellidoMaterno,
+                apellido_paterno: apellidoPaterno,
+                email: email,
+                fono: fono,
+                password: hashedPassword,
+                tipo_usuario: tipoUsuario
+            }
+        })
+
+        res.status(201).json({ message: 'usuario creado' })
+
+
+    } catch (error: any) {
+        res.status(500).json({ message: 'error en el server' })
+    }
+
+}

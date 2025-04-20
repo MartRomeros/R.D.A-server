@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { Alumno } from '../models/interfaces'
+import { Usuario } from '../models/interfaces'
 
 //encriptar la password
 const SALT_ROUNDS = 10
@@ -15,7 +15,7 @@ export const comparePasswords = async (password: string, hash: string): Promise<
 
 //generar token
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret'
-export const generateToken = (alumno: Alumno): string => {
-    return jwt.sign({ id: alumno.id_alumno, email: alumno.email_alumno }, JWT_SECRET, { expiresIn: '1h' })
+export const generateToken = (usuario: Usuario): string => {
+    return jwt.sign({ id: usuario.id, email: usuario.email }, JWT_SECRET, { expiresIn: '1h' })
 
 }

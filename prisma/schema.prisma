@@ -13,13 +13,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Alumno {
-  id_alumno               Int     @id @default(autoincrement())
-  run_alumno              String @unique
-  nombre_alumno           String
-  apellido_paterno_alumno String
-  apellido_materno_alumno String
-  fono_alumno             Int   @unique
-  email_alumno            String  @unique
-  password                String?
+model Usuario {
+  id               Int     @id @default(autoincrement())
+  run              String  @unique
+  nombre           String
+  apellido_paterno String
+  apellido_materno String
+  fono             Int     @unique
+  email            String  @unique
+  password         String?
+  tipo_usuario     String
+}
+
+model Actividad {
+  id_actividad        Int    @id @default(autoincrement())
+  fecha_actividad     String
+  hora_inic_activdad  String
+  hora_term_actividad String
+  area_trabajo        String
+  run_alumno          String @unique
 }
