@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import usuario from '../models/user'
 import { Usuario } from '../models/interfaces'
 import { comparePasswords, generateToken, hashPassword } from "../services/authServices"
+import { sendRecuperarClaveMail } from "../services/mailServices"
 
 
 //LOGIN
@@ -29,19 +30,66 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         const iUser: Usuario = user
         const passwordMatch = await comparePasswords(password, user.password!)
 
-        if (!comparePasswords) {
+        if (!passwordMatch) {
             res.status(401).json({ message: 'credenciales incorrectas' })
+            console.log(passwordMatch)
             return
         }
 
         const token = generateToken(iUser)
-        res.status(200).json({ message: 'login exitoso', token, tipoUsuario: iUser.tipo_usuario })
-        
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 60 * 60 * 100
+        })
+
+        res.status(200).json({ tipoUsuario: iUser.tipo_usuario })
+
     } catch (error: any) {
         res.status(500).json({ message: 'error en el server' })
     }
 
 }
+
+
+//RECUPERAR CLAVE
+export const recuperarClave = async (req: Request, res: Response): Promise<void> => {
+
+    const { email } = req.body
+
+    if (!email) {
+        res.status(400).json({ message: 'email es requerido!' })
+        return
+    }
+
+    try {
+
+        const user = await usuario.findUnique({ where: { email } })
+
+        if (!user) {
+            res.status(404).json({ message: 'el usuario no existe' })
+            return
+        }
+
+        const password = user?.apellido_paterno[0].toLocaleUpperCase() + user.run
+
+        await usuario.update({ data: { password }, where: { email } })
+
+        sendRecuperarClaveMail(email)
+
+        res.status(200).json({ message: 'clave actualizada!, en instantes te llegara un correo con las instrucciones!' })
+
+
+
+    } catch (error: any) {
+        res.status(500).json({ message: 'error en el server' })
+        console.error(error)
+    }
+
+}
+
 
 //REGISTRO
 export const registrar = async (req: Request, res: Response): Promise<void> => {
