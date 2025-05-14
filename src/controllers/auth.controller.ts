@@ -41,13 +41,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'strict',
+            sameSite: 'none',
         })
 
         res.cookie('email', email, {
             httpOnly: true,
             secure: true,
-            sameSite: 'strict',
+            sameSite: 'none',
         })
 
         res.status(200).json({ tipoUsuario: iUser.tipo_usuario })
@@ -148,12 +148,12 @@ export const logout = (req: Request, res: Response) => {
     res.clearCookie('token', {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict'
+        sameSite: 'none'
     })
     res.clearCookie('email', {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict'
+        sameSite: 'none'
     })
     res.status(200).json({ message: 'logout sucessful' })
 
