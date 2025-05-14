@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express'
-import { isAuthenticated, login, logout, recuperarClave, registrar } from '../controllers/auth.controller'
 import jwt from 'jsonwebtoken'
+import { traerUsuarioByEmail } from '../controllers/usuario.controller'
 
 const router = express.Router()
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret'
@@ -9,7 +9,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'default-secret'
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.token
     if (!token) {
-        res.status(401).json({ message: 'no autorizado!' })
+        res.status(401).json({ message: 'no autorizado! por que no hay un token' })
         return
     }
 
@@ -24,13 +24,6 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     })
 }
 
-
-
-
-router.post('/login', login)
-router.post('/logout', logout)
-router.post('/registro', registrar)
-router.put('/forgot-password', recuperarClave)
-router.get('/is-authenticated',authenticateToken,isAuthenticated)
+router.get('/user/email',authenticateToken,traerUsuarioByEmail)
 
 export default router

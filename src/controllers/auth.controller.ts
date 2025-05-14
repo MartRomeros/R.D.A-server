@@ -42,7 +42,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             httpOnly: true,
             secure: false,
             sameSite: 'lax',
-            maxAge: 60 * 60 * 100
+        })
+
+        res.cookie('email',email,{
+            httpOnly:true,
+            secure:false,
+            sameSite:'lax',
         })
 
         res.status(200).json({ tipoUsuario: iUser.tipo_usuario })
@@ -73,9 +78,10 @@ export const recuperarClave = async (req: Request, res: Response): Promise<void>
             return
         }
 
-        const password = user?.apellido_paterno[0].toLocaleUpperCase() + user.run
+        const password: string = user?.apellido_paterno[0].toLocaleUpperCase() + user.run
+        const hashedPassword: string = await hashPassword(password)
 
-        await usuario.update({ data: { password }, where: { email } })
+        await usuario.update({ data: { password: hashedPassword }, where: { email } })
 
         sendRecuperarClaveMail(email)
 
@@ -128,5 +134,27 @@ export const registrar = async (req: Request, res: Response): Promise<void> => {
     } catch (error: any) {
         res.status(500).json({ message: 'error en el server' })
     }
+
+}
+
+//GET Controlador para demostrar si estamos autenticados
+export const isAuthenticated = (req: Request, res: Response) => {
+    res.status(200).json({ isAuthenticated: true })
+}
+
+
+//LOGOUT
+export const logout = (req:Request,res:Response) => {
+    res.clearCookie('token',{
+        httpOnly:true,
+        secure:true,
+        sameSite:'lax'
+    })
+    res.clearCookie('email',{
+        httpOnly:true,
+        secure:true,
+        sameSite:'lax'
+    })
+    res.status(200).json({message:'logout sucessful'})
 
 }

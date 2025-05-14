@@ -14,8 +14,9 @@ export const comparePasswords = async (password: string, hash: string): Promise<
 }
 
 //generar token
-const JWT_SECRET = process.env.JWT_SECRET || 'default_secret'
+const JWT_SECRET = process.env.JWT_SECRET || 'default-secret'
 export const generateToken = (usuario: Usuario): string => {
     return jwt.sign({ id: usuario.id, email: usuario.email }, JWT_SECRET, { expiresIn: '1h' })
 
 }
+

@@ -31,5 +31,5 @@ model Actividad {
   hora_inic_activdad  String
   hora_term_actividad String
   area_trabajo        String
-  run_alumno          String @unique
+  run_alumno          String
 }

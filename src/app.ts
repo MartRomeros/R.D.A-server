@@ -2,6 +2,8 @@ import dotenv from 'dotenv' //importamos dotenv para manejar variables de entorn
 import express from 'express' //importamos el framework express
 import cors from 'cors'
 import authRoutes from './routes/auth.routes'
+import userRoutes from './routes/user.routes'
+import actividadRoutes from './routes/actividad.routes'
 import cookieParser from 'cookie-parser'
 
 
@@ -22,6 +24,8 @@ app.use(cors({
 
 
 app.use('/auth',authRoutes)
+app.use('/user',userRoutes)
+app.use('/actividad',actividadRoutes)
 
 console.log('levantando aplicacion!')
 
