@@ -40,14 +40,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
         res.cookie('token', token, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'lax',
+            secure: true,
+            sameSite: 'strict',
         })
 
-        res.cookie('email',email,{
-            httpOnly:true,
-            secure:false,
-            sameSite:'lax',
+        res.cookie('email', email, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
         })
 
         res.status(200).json({ tipoUsuario: iUser.tipo_usuario })
@@ -144,17 +144,17 @@ export const isAuthenticated = (req: Request, res: Response) => {
 
 
 //LOGOUT
-export const logout = (req:Request,res:Response) => {
-    res.clearCookie('token',{
-        httpOnly:true,
-        secure:true,
-        sameSite:'lax'
+export const logout = (req: Request, res: Response) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict'
     })
-    res.clearCookie('email',{
-        httpOnly:true,
-        secure:true,
-        sameSite:'lax'
+    res.clearCookie('email', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'strict'
     })
-    res.status(200).json({message:'logout sucessful'})
+    res.status(200).json({ message: 'logout sucessful' })
 
 }
