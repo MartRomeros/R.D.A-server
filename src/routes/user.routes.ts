@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { traerUsuarioByEmail } from '../controllers/usuario.controller'
+import { actualizarUsuario, traerUsuarioByEmail } from '../controllers/usuario.controller'
 
 const router = express.Router()
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret'
@@ -15,15 +15,16 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
 
     jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
 
-        if(err){
-            console.log('error en la autenticacion',err)
-            return res.status(403).json({message:'No tienes acceso a este recurso'})        
+        if (err) {
+            console.log('error en la autenticacion', err)
+            return res.status(403).json({ message: 'No tienes acceso a este recurso' })
         }
 
         next()
     })
 }
 
-router.get('/user/email',authenticateToken,traerUsuarioByEmail)
+router.get('/user/email', authenticateToken, traerUsuarioByEmail)
+router.put('/update', authenticateToken, actualizarUsuario)
 
 export default router
