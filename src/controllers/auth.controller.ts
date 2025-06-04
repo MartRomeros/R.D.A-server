@@ -44,12 +44,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             sameSite: 'none',
         })
 
-        res.cookie('email', email, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-        })
-
         res.status(200).json({ tipoUsuario: iUser.tipo_usuario })
 
     } catch (error: any) {
@@ -133,6 +127,7 @@ export const registrar = async (req: Request, res: Response): Promise<void> => {
 
     } catch (error: any) {
         res.status(500).json({ message: 'error en el server' })
+        console.log(error)
     }
 
 }
@@ -147,12 +142,7 @@ export const isAuthenticated = (req: Request, res: Response) => {
 export const logout = (req: Request, res: Response) => {
     res.clearCookie('token', {
         httpOnly: true,
-        secure: true,
-        sameSite: 'none'
-    })
-    res.clearCookie('email', {
-        httpOnly: true,
-        secure: true,
+        secure: false,
         sameSite: 'none'
     })
     res.status(200).json({ message: 'logout sucessful' })

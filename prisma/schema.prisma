@@ -14,22 +14,24 @@ datasource db {
 }
 
 model Usuario {
-  id               Int     @id @default(autoincrement())
-  run              String  @unique
+  id               Int         @id @default(autoincrement())
+  run              String      @unique
   nombre           String
   apellido_paterno String
   apellido_materno String
-  fono             Int     @unique
-  email            String  @unique
+  fono             Int         @unique
+  email            String      @unique
   password         String?
   tipo_usuario     String
+  actividades      Actividad[] @relation("UsuarioActividades")
 }
 
 model Actividad {
-  id_actividad        Int    @id @default(autoincrement())
-  fecha_actividad     String
-  hora_inic_activdad  String
-  hora_term_actividad String
+  id_actividad        Int     @id @default(autoincrement())
+  fecha_actividad     DateTime
+  hora_inic_activdad  DateTime
+  hora_term_actividad DateTime
   area_trabajo        String
   run_alumno          String
+  usuario             Usuario @relation("UsuarioActividades", fields: [run_alumno], references: [run])
 }

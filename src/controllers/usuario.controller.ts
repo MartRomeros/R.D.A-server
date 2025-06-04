@@ -1,16 +1,13 @@
 import usuario from '../models/user'
 import { Request, Response } from 'express'
-import { hashPassword } from '../services/authServices'
+import { hashPassword, traerMailDelToken } from '../services/authServices'
 
 export const traerUsuarioByEmail = async (req: Request, res: Response): Promise<void> => {
-    const email = req.cookies.email
-    if (!email) {
-        res.status(404).json({ message: 'email no encontrado!' })
-        return
-    }
+    const token = req.cookies.token
+    const email = traerMailDelToken(token) || ''
 
     try {
-        const user = await usuario.findUnique({ where: { email: email } })
+        const user = await usuario.findUnique({ where: { email: email } }) 
         res.status(200).json(user)
     } catch (error: any) {
         res.status(500).json({ message: 'error en el server' })
@@ -19,12 +16,10 @@ export const traerUsuarioByEmail = async (req: Request, res: Response): Promise<
 }
 
 export const actualizarUsuario = async (req: Request, res: Response): Promise<void> => {
-    const email = req.cookies.email
-    if (!email) {
-        res.status(404).json({ message: 'email no encontrado!' })
-        return
-    }
+    
     const { password, fono } = req.body
+    const token = req.cookies.token
+    const email = traerMailDelToken(token) || ''
     if (!password) {
         res.status(400).json({ message: 'no hay contrasena' })
         return
@@ -43,10 +38,21 @@ export const actualizarUsuario = async (req: Request, res: Response): Promise<vo
             },
             where: { email: email }
         })
-        res.status(200).json({message:'credenciales actualizadas!'})
+        res.status(200).json({ message: 'credenciales actualizadas!' })
 
     } catch (error: any) {
         res.status(500).json({ error })
     }
 
+}
+
+export const traerAlumnosAyudantes = async (req: Request, res: Response) => {
+    try {
+        const alumnos = await usuario.findMany({
+            where: { tipo_usuario: 'ALUMNO' }
+        })
+        res.status(200).json({ alumnos })
+    } catch (error: any) {
+        res.status(200).json({ error, message: 'error en el server!' })
+    }
 }

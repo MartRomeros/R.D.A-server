@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { actualizarUsuario, traerUsuarioByEmail } from '../controllers/usuario.controller'
+import { actualizarUsuario, traerAlumnosAyudantes, traerUsuarioByEmail } from '../controllers/usuario.controller'
 
 const router = express.Router()
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret'
@@ -26,5 +26,6 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
 
 router.get('/user/email', authenticateToken, traerUsuarioByEmail)
 router.put('/update', authenticateToken, actualizarUsuario)
+router.get('/alumnos',authenticateToken,traerAlumnosAyudantes)
 
 export default router

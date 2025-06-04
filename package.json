@@ -18,6 +18,7 @@
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "luxon": "^3.6.1",
     "nodemailer": "^6.10.1",
     "typescript": "^5.8.3"
   },
@@ -27,6 +28,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/jsonwebtoken": "^9.0.9",
+    "@types/luxon": "^3.6.2",
     "@types/nodemailer": "^6.4.17",
     "prisma": "^6.5.0",
     "rimraf": "^6.0.1",

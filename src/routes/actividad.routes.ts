@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
-import { registrarActividad, traerActividadesByRun } from '../controllers/actividad.controller'
+import { calcularHorasPorMes, calcularHorasTotalesPorAlumno, registrarActividad, traerActividadesByRun } from '../controllers/actividad.controller'
 
 const router = express.Router()
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret'
@@ -26,6 +26,8 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
 
 router.post('/actividades', authenticateToken, registrarActividad)
 router.get('/actividades/:run', authenticateToken, traerActividadesByRun)
+router.get('/total_horas/:run',authenticateToken,calcularHorasTotalesPorAlumno)
+router.get('/horas_mes/:mes',authenticateToken,calcularHorasPorMes)
 
 
 export default router
