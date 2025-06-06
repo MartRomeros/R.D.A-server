@@ -1,36 +1,14 @@
-import express, { NextFunction, Request, Response } from 'express'
+import express from 'express'
 import { isAuthenticated, login, logout, recuperarClave, registrar } from '../controllers/auth.controller'
-import jwt from 'jsonwebtoken'
+import { authenticatedToken } from '../services/authServices'
 
 const router = express.Router()
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret'
 
-//MIDDLEWARE PARA MANEJAR PETICIONES (JWT)
-const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.token
-    if (!token) {
-        res.status(401).json({ message: 'no autorizado!' })
-        return
-    }
-
-    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
-
-        if(err){
-            console.log('error en la autenticacion',err)
-            return res.status(403).json({message:'No tienes acceso a este recurso'})        
-        }
-
-        next()
-    })
-}
-
-
-
-
 router.post('/login', login)
 router.post('/logout', logout)
 router.post('/registro', registrar)
-router.put('/forgot-password', recuperarClave)
-router.get('/is-authenticated',authenticateToken,isAuthenticated)
+router.put('/forgot_password', recuperarClave)
+router.get('/is_authenticated',authenticatedToken,isAuthenticated)
 
 export default router

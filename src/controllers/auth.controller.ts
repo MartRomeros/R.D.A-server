@@ -15,7 +15,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     if (!password) {
-        res.status(400).json({ message: 'contrasena es obligatoria!' }) //cambiar a contrasenna (ESP)
+        res.status(400).json({ message: 'contraseña es obligatoria!' })
         return
     }
 
@@ -47,8 +47,20 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json({ tipoUsuario: iUser.tipo_usuario })
 
     } catch (error: any) {
-        res.status(500).json({ message: 'error en el server' })
+        res.status(500).json({ message: 'error 501' })
+        console.log(error)
     }
+
+}
+
+//LOGOUT
+export const logout = (req: Request, res: Response) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'none'
+    })
+    res.status(200).json({ message: 'logout sucessful' })
 
 }
 
@@ -135,16 +147,4 @@ export const registrar = async (req: Request, res: Response): Promise<void> => {
 //GET Controlador para demostrar si estamos autenticados
 export const isAuthenticated = (req: Request, res: Response) => {
     res.status(200).json({ isAuthenticated: true })
-}
-
-
-//LOGOUT
-export const logout = (req: Request, res: Response) => {
-    res.clearCookie('token', {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'none'
-    })
-    res.status(200).json({ message: 'logout sucessful' })
-
 }

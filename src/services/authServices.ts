@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { Usuario } from '../models/interfaces'
+import { NextFunction, Request, Response } from 'express'
 
 
 //encriptar la password
@@ -20,17 +21,36 @@ export const generateToken = (usuario: Usuario): string => {
     return jwt.sign({ id: usuario.id, email: usuario.email }, JWT_SECRET, { expiresIn: '1h' })
 }
 
-interface Payload{
-    id:number,
-    email:string
+
+//MIDDLEWARE PARA MANEJAR PETICIONES (JWT)
+export const authenticatedToken = (req: Request, res: Response, next: NextFunction) => {
+    const token = req.cookies.token
+    if (!token) {
+        res.status(401).json({ message: 'no autorizado!' })
+        return
+    }
+
+    jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
+
+        if (err) {
+            console.log('error en la autenticacion', err)
+            return res.status(403).json({ message: 'No tienes acceso a este recurso' })
+        }
+
+        next()
+    })
+}
+
+interface Payload {
+    id: number,
+    email: string
 }
 
 //extraer email del token
 export const traerMailDelToken = (token: string): string | null => {
     try {
-        const decoded = jwt.verify(token,JWT_SECRET) as Payload
+        const decoded = jwt.verify(token, JWT_SECRET) as Payload
         return decoded.email
-
 
     } catch (error) {
         console.error(error)
