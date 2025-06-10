@@ -36,19 +36,21 @@ model Tipo_usuario {
 }
 
 model Orden_Compra {
-  id         Int     @id @default(autoincrement())
-  numero_oc  Int     @unique
-  usuario_id Int
-  usuario   Usuario @relation(fields: [usuario_id], references: [id])
+  id            Int      @id @default(autoincrement())
+  numero_oc     Int      @unique
+  fecha_emision DateTime
+  usuario_id    Int
+  usuario       Usuario  @relation(fields: [usuario_id], references: [id])
 }
 
 model Solicitud {
-  id          Int        @id @default(autoincrement())
-  descripcion String?
-  estado      Boolean
-  id_alumno   Int
-  alumno      Usuario    @relation(fields: [id_alumno], references: [id])
-  actividad   Actividad?
+  id           Int       @id @default(autoincrement())
+  descripcion  String?
+  estado       Boolean
+  id_alumno    Int
+  alumno       Usuario   @relation(fields: [id_alumno], references: [id])
+  id_actividad Int
+  actividad    Actividad @relation(fields: [id_actividad], references: [id_actividad])
 }
 
 model Actividad {
@@ -56,12 +58,12 @@ model Actividad {
   fecha_actividad     DateTime
   hora_inic_activdad  DateTime
   hora_term_actividad DateTime
+  estado              Boolean
   area_trabajo_id     Int
   area_trabajo        Area_trabajo @relation(fields: [area_trabajo_id], references: [id])
   run_alumno          String
   usuario             Usuario      @relation("UsuarioActividades", fields: [run_alumno], references: [run])
-  solicitud_id        Int          @unique
-  solicitud           Solicitud    @relation(fields: [solicitud_id], references: [id])
+  solicitud           Solicitud[]
 }
 
 model Area_trabajo {

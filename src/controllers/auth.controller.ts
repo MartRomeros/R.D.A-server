@@ -3,6 +3,7 @@ import usuario from '../models/user'
 import { Usuario } from '../models/interfaces'
 import { comparePasswords, generateToken, hashPassword } from "../services/authServices"
 import { sendRecuperarClaveMail } from "../services/mailServices"
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
 
 
 //LOGIN
@@ -44,7 +45,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             sameSite: 'none',
         })
 
-        res.status(200).json({ tipoUsuario: iUser.tipo_usuario })
+        res.status(200).json({ tipoUsuario: iUser.tipo_usuario_id })
 
     } catch (error: any) {
         res.status(500).json({ message: 'error 501' })
@@ -130,14 +131,14 @@ export const registrar = async (req: Request, res: Response): Promise<void> => {
                 email: email,
                 fono: fono,
                 password: hashedPassword,
-                tipo_usuario: tipoUsuario
+                tipo_usuario_id: tipoUsuario,
             }
         })
 
         res.status(201).json({ message: 'usuario creado' })
 
 
-    } catch (error: any) {
+    } catch (error: any | PrismaClientKnownRequestError) {
         res.status(500).json({ message: 'error en el server' })
         console.log(error)
     }

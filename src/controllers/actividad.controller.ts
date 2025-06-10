@@ -7,7 +7,7 @@ import { traerUsuarioByEmail } from "./usuario.controller";
 import { traerMailDelToken } from "../services/authServices";
 
 export const registrarActividad = async (req: Request, res: Response): Promise<void> => {
-    const { fecha_actividad, hora_inic_activdad, hora_term_actividad, run_alumno, area_trabajo } = req.body
+    const { fecha_actividad, hora_inic_activdad, hora_term_actividad, area_trabajo } = req.body
     const claves = Object.keys(req.body)
 
     for (let i = 0; i < claves.length; i++) {
@@ -17,14 +17,19 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
         }
     }
 
+    const token = req.cookies.token
+    const email = traerMailDelToken(token) || ""
+
     try {
+        const alumno = await prismaUsuario.findUnique({ where: { email: email } })
         await prismaActividad.create({
             data: {
-                area_trabajo: area_trabajo,
                 fecha_actividad: new Date(fecha_actividad),
                 hora_inic_activdad: new Date(hora_inic_activdad),
                 hora_term_actividad: new Date(hora_term_actividad),
-                run_alumno: run_alumno
+                run_alumno: alumno!.run,
+                area_trabajo_id: parseInt(area_trabajo),
+                estado: false
             }
         })
         res.status(201).json({ message: 'actividad registrada!' })
@@ -43,20 +48,29 @@ export const traerActividadesByRun = async (req: Request, res: Response): Promis
         const token = req.cookies.token
         const emailAlumno = traerMailDelToken(token) || ""
         const alumno = await prismaUsuario.findUnique({ where: { email: emailAlumno } })
-        const actividades = await prismaActividad.findMany({ where: { run_alumno: alumno?.run } })
+        const actividades = await prismaActividad.findMany({
+            where: { run_alumno: alumno?.run },
+            include: {
+                area_trabajo: {
+                    select: {
+                        nombre: true
+                    }
+                }
+            }
+        })
         res.status(200).json({ actividades })
     } catch (error: any) {
         res.status(500).json({ message: 'error en el server', error })
     }
 }
 
-export const detallesDelAlumno = async (req: Request, res: Response): Promise<void> => {
-    let horasTotales: number = 0
+export const detallesDelAlumnoMes = async (req: Request, res: Response): Promise<void> => {
     let horasTotalesMes: number = 0
     let horasDifusion: number = 0
     let horasDesarrolloLaboral: number = 0
     let horasComunicacion: number = 0
     let horasExtension: number = 0
+
     const token = req.cookies.token
     const mesYanio = req.params.mesYanio
 
@@ -70,25 +84,19 @@ export const detallesDelAlumno = async (req: Request, res: Response): Promise<vo
     try {
         const email = traerMailDelToken(token) || ""
         const alumno = await prismaUsuario.findUnique({ where: { email: email } })
-        const actividades = await actividad.findMany({ where: { run_alumno: alumno?.run } });
-
-        //traer horas totales
-        actividades.forEach((actividad) => {
-            const horaInic = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
-            const horaTerm = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
-            if (!horaInic.isValid || !horaTerm.isValid) {
-                console.warn('fecha invalidad detectada para actividad ID:', actividad.id_actividad)
-            }
-            const diffEnHoras = horaTerm.diff(horaInic, 'hours').hours
-            horasTotales += diffEnHoras
-        })
-
         //traer horas totales por mes
         const actividadesPorMes = await prismaActividad.findMany({
             where: {
                 run_alumno: alumno?.run, fecha_actividad: {
                     gte: fechaInicio,
                     lt: fechaFin
+                },
+            },
+            include: {
+                area_trabajo: {
+                    select: {
+                        nombre: true
+                    }
                 }
             }
         })
@@ -114,8 +122,8 @@ export const detallesDelAlumno = async (req: Request, res: Response): Promise<vo
             let horaTermC
             let horaTermE
 
-            switch (actividad.area_trabajo) {
-                case 'difusion':
+            switch (actividad.area_trabajo_id) {
+                case 6:
                     horaInicD = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermD = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicD.isValid || !horaTermD.isValid) {
@@ -124,7 +132,7 @@ export const detallesDelAlumno = async (req: Request, res: Response): Promise<vo
                     const diffEnHorasD = horaTermD.diff(horaInicD, 'hours').hours
                     horasDifusion += diffEnHorasD
                     break;
-                case 'desarrollo_laboral':
+                case 9:
                     horaInicDL = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermDL = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicDL.isValid || !horaTermDL.isValid) {
@@ -133,7 +141,7 @@ export const detallesDelAlumno = async (req: Request, res: Response): Promise<vo
                     const diffEnHorasDL = horaTermDL.diff(horaInicDL, 'hours').hours
                     horasDesarrolloLaboral += diffEnHorasDL
                     break;
-                case 'extension':
+                case 7:
                     horaInicE = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermE = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicE.isValid || !horaTermE.isValid) {
@@ -142,7 +150,7 @@ export const detallesDelAlumno = async (req: Request, res: Response): Promise<vo
                     const diffEnHorasE = horaTermE.diff(horaInicE, 'hours').hours
                     horasExtension += diffEnHorasE
                     break;
-                case 'comunicacion':
+                case 8:
                     horaInicC = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermC = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicC.isValid || !horaTermC.isValid) {
@@ -159,12 +167,14 @@ export const detallesDelAlumno = async (req: Request, res: Response): Promise<vo
 
 
         res.status(200).json({
-            horasTotales: Math.round(horasTotales), horasTotalesMes: Math.round(horasTotalesMes), horasArea: {
+            horasTotalesMes: Math.round(horasTotalesMes),
+            horasAreaMes: {
                 difusion: horasDifusion,
                 extension: horasExtension,
                 comunicacion: horasComunicacion,
                 desarrolloLaboral: horasDesarrolloLaboral
-            }
+            },
+            actividadesPorMes
         })
 
     } catch (error: any) {
@@ -198,8 +208,8 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
             let horaTermC
             let horaTermE
 
-            switch (actividad.area_trabajo) {
-                case 'difusion':
+            switch (actividad.area_trabajo_id) {
+                case 6:
                     horaInicD = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermD = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicD.isValid || !horaTermD.isValid) {
@@ -208,7 +218,7 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
                     const diffEnHorasD = horaTermD.diff(horaInicD, 'hours').hours
                     horasDifusion += diffEnHorasD
                     break;
-                case 'desarrollo_laboral':
+                case 9:
                     horaInicDL = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermDL = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicDL.isValid || !horaTermDL.isValid) {
@@ -217,7 +227,7 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
                     const diffEnHorasDL = horaTermDL.diff(horaInicDL, 'hours').hours
                     horasDesarrolloLaboral += diffEnHorasDL
                     break;
-                case 'extension':
+                case 7:
                     horaInicE = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermE = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicE.isValid || !horaTermE.isValid) {
@@ -226,7 +236,7 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
                     const diffEnHorasE = horaTermE.diff(horaInicE, 'hours').hours
                     horasExtension += diffEnHorasE
                     break;
-                case 'comunicacion':
+                case 8:
                     horaInicC = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermC = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicC.isValid || !horaTermC.isValid) {
@@ -295,8 +305,8 @@ export const filtrarHorasMes = async (req: Request, res: Response) => {
             let horaTermC
             let horaTermE
 
-            switch (actividad.area_trabajo) {
-                case 'difusion':
+            switch (actividad.area_trabajo_id) {
+                case 6:
                     horaInicD = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermD = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicD.isValid || !horaTermD.isValid) {
@@ -305,7 +315,7 @@ export const filtrarHorasMes = async (req: Request, res: Response) => {
                     const diffEnHorasD = horaTermD.diff(horaInicD, 'hours').hours
                     horasDifusion += diffEnHorasD
                     break;
-                case 'desarrollo_laboral':
+                case 9:
                     horaInicDL = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermDL = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicDL.isValid || !horaTermDL.isValid) {
@@ -314,7 +324,7 @@ export const filtrarHorasMes = async (req: Request, res: Response) => {
                     const diffEnHorasDL = horaTermDL.diff(horaInicDL, 'hours').hours
                     horasDesarrolloLaboral += diffEnHorasDL
                     break;
-                case 'extension':
+                case 7:
                     horaInicE = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermE = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicE.isValid || !horaTermE.isValid) {
@@ -323,7 +333,7 @@ export const filtrarHorasMes = async (req: Request, res: Response) => {
                     const diffEnHorasE = horaTermE.diff(horaInicE, 'hours').hours
                     horasExtension += diffEnHorasE
                     break;
-                case 'comunicacion':
+                case 8:
                     horaInicC = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermC = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicC.isValid || !horaTermC.isValid) {
@@ -356,7 +366,7 @@ export const filtrarHorasMes = async (req: Request, res: Response) => {
 
 export const filtrarActividades = async (req: Request, res: Response): Promise<void> => {
     const { mesYanio, area } = req.query
-    let mes, anio,fechaInicio,fechaFin
+    let mes, anio, fechaInicio, fechaFin
 
 
     if (typeof mesYanio === 'string' && /^[0-9]{6}$/.test(mesYanio)) {
@@ -384,7 +394,15 @@ export const filtrarActividades = async (req: Request, res: Response): Promise<v
             const actividadesFiltradas = await prismaActividad.findMany({
                 where: {
                     run_alumno: alumno?.run,
-                    area_trabajo: area
+                    area_trabajo:{
+                        nombre:area
+                    }
+                }, include: {
+                    area_trabajo: {
+                        select: {
+                            nombre: true
+                        }
+                    }
                 }
             })
             res.status(200).json({ actividadesFiltradas })
@@ -401,23 +419,25 @@ export const filtrarActividades = async (req: Request, res: Response): Promise<v
             })
             res.status(200).json({ actividadesFiltradas })
 
-        } else if(area && mesYanio) {
+        } else if (area && mesYanio) {
 
             const actividadesFiltradas = await prismaActividad.findMany({
                 where: {
                     run_alumno: alumno?.run,
-                    area_trabajo: area,
                     fecha_actividad: {
                         gte: fechaInicio,
-                        lt: fechaFin
+                        lt: fechaFin,
+                    },
+                    area_trabajo:{
+                        nombre:area
                     }
-                }
+                },include:{area_trabajo:{select:{nombre:true}}}
             })
 
             res.status(200).json({ actividadesFiltradas })
-        }else{
+        } else {
 
-            const actividadesFiltradas = await prismaActividad.findMany()
+            const actividadesFiltradas = await prismaActividad.findMany({ include: { area_trabajo: true } })
             res.status(200).json({ actividadesFiltradas })
         }
 

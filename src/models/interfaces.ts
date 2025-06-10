@@ -19,7 +19,7 @@ export interface Usuario {
     fono: number,
     email: string,
     password: string | null,
-    tipo_usuario: string
+    tipo_usuario_id: number
 }
 
 export interface Actividad {

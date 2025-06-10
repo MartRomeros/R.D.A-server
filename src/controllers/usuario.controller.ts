@@ -49,7 +49,7 @@ export const actualizarUsuario = async (req: Request, res: Response): Promise<vo
 export const traerAlumnosAyudantes = async (req: Request, res: Response) => {
     try {
         const alumnos = await usuario.findMany({
-            where: { tipo_usuario: 'ALUMNO' }
+            where: { tipo_usuario_id: 1 }
         })
         res.status(200).json({ alumnos })
     } catch (error: any) {

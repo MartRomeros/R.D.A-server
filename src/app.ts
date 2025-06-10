@@ -4,6 +4,7 @@ import cors from 'cors'
 import authRoutes from './routes/auth.routes'
 import userRoutes from './routes/user.routes'
 import actividadRoutes from './routes/actividad.routes'
+import areaTrabajoRoutes from './routes/areaTrabajo.routes'
 import cookieParser from 'cookie-parser'
 
 
@@ -26,6 +27,7 @@ app.use(cors({
 app.use('/auth',authRoutes)
 app.use('/user',userRoutes)
 app.use('/actividad',actividadRoutes)
+app.use('/area_trabajo',areaTrabajoRoutes)
 
 console.log('levantando aplicacion!')
 
