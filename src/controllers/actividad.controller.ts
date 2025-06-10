@@ -77,7 +77,7 @@ export const traerActividadesByRun = async (req: Request, res: Response): Promis
                     gte: fechaInicio,
                     lt: fechaFin
                 }
-            }
+            }, include: { area_trabajo: true }
         })
 
         actividadesMes.forEach((actividad) => {
@@ -91,7 +91,7 @@ export const traerActividadesByRun = async (req: Request, res: Response): Promis
         })
 
 
-        res.status(200).json({ alumno, horasTotales, horasTotalesMes })
+        res.status(200).json({ alumno, horasTotales, horasTotalesMes, actividadesMes })
 
     } catch (error: any) {
         res.status(500).json({ message: 'error en el server', error })
@@ -479,5 +479,43 @@ export const filtrarActividades = async (req: Request, res: Response): Promise<v
         console.error(error)
         res.status(500).json({ message: 'error en el server' })
 
+    }
+}
+
+export const traerTotales = async (req: Request, res: Response): Promise<void> => {
+    
+    let horasMes:number = 0
+
+    const fechaActual = new Date()
+    const mes = parseInt(`0${fechaActual.getMonth() + 1}`)
+    const anio = fechaActual.getFullYear()
+
+    const fechaInicio = new Date(anio, mes - 1, 1)
+    const fechaFin = new Date(anio, mes, 1)
+
+    try {
+        //cantidad de alumnos
+        const alumnos = await usuario.count({where:{tipo_usuario_id:3}})
+        //cantidad de horas del mes
+        const actividadesMes = await  actividad.findMany({where:{fecha_actividad:{
+            gte:fechaInicio,
+            lt:fechaFin
+        }}})
+
+        actividadesMes.forEach((actividad) => {
+            const inicio = actividad.hora_inic_activdad;
+            const termino = actividad.hora_term_actividad;
+
+            if (inicio && termino) {
+                horasMes += ((termino.getTime() - inicio.getTime()) / (1000 * 60) / 60);
+            }
+        })
+
+
+        res.status(200).json({alumnos,horasMes})
+        
+    } catch (error:any) {
+        res.status(500).json({message:'error en el server'})
+        console.error(error)
     }
 }

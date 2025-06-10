@@ -1,5 +1,5 @@
 import express from 'express'
-import { detallesDelAlumnoMes, filtrarActividades, filtrarHorasMes, registrarActividad, traerActividadesByRun, traerTotalesAlumnos } from '../controllers/actividad.controller'
+import { detallesDelAlumnoMes, filtrarActividades, filtrarHorasMes, registrarActividad, traerActividadesByRun, traerTotales, traerTotalesAlumnos } from '../controllers/actividad.controller'
 import { authenticatedToken } from '../services/authServices'
 
 const router = express.Router()
@@ -11,5 +11,6 @@ router.get('/totales_alumno',authenticatedToken,traerTotalesAlumnos)
 router.get('/horas_mes/:mesYanio',authenticatedToken,filtrarHorasMes)
 router.get('/actividades_filtradas/',authenticatedToken,filtrarActividades)
 router.get('/actividades/:run',authenticatedToken,traerActividadesByRun)
+router.get('/totales',authenticatedToken,traerTotales)
 
 export default router
