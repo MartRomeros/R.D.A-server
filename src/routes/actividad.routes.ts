@@ -10,6 +10,6 @@ router.get('/detalles_alumno/:mesYanio',authenticatedToken,detallesDelAlumnoMes)
 router.get('/totales_alumno',authenticatedToken,traerTotalesAlumnos)
 router.get('/horas_mes/:mesYanio',authenticatedToken,filtrarHorasMes)
 router.get('/actividades_filtradas/',authenticatedToken,filtrarActividades)
-
+router.get('/actividades/:run',authenticatedToken,traerActividadesByRun)
 
 export default router

@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 import prismaActividad from '../models/actividad'
 import prismaUsuario from '../models/user'
 import actividad from "../models/actividad";
-import { DateTime, Zone } from 'luxon'
-import { traerUsuarioByEmail } from "./usuario.controller";
+import { DateTime } from 'luxon'
 import { traerMailDelToken } from "../services/authServices";
+import usuario from "../models/user";
 
 export const registrarActividad = async (req: Request, res: Response): Promise<void> => {
     const { fecha_actividad, hora_inic_activdad, hora_term_actividad, area_trabajo } = req.body
@@ -44,21 +44,55 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
 }
 
 export const traerActividadesByRun = async (req: Request, res: Response): Promise<void> => {
+    const run = req.params.run
+
+    const fechaActual = new Date()
+    const mes = parseInt(`0${fechaActual.getMonth() + 1}`)
+    const anio = fechaActual.getFullYear()
+
+    const fechaInicio = new Date(anio, mes - 1, 1)
+    const fechaFin = new Date(anio, mes, 1)
+
+    let horasTotales: number = 0
+    let horasTotalesMes: number = 0
+
+
+
     try {
-        const token = req.cookies.token
-        const emailAlumno = traerMailDelToken(token) || ""
-        const alumno = await prismaUsuario.findUnique({ where: { email: emailAlumno } })
-        const actividades = await prismaActividad.findMany({
-            where: { run_alumno: alumno?.run },
-            include: {
-                area_trabajo: {
-                    select: {
-                        nombre: true
-                    }
+        const alumno = await usuario.findUnique({ where: { run: run } })
+        const actividades = await actividad.findMany({ where: { run_alumno: run } })
+        //traer actividades totales y del mes
+        actividades.forEach((actividad) => {
+            const inicio = actividad.hora_inic_activdad;
+            const termino = actividad.hora_term_actividad;
+
+            if (inicio && termino) {
+                horasTotales += ((termino.getTime() - inicio.getTime()) / (1000 * 60) / 60);
+            }
+        })
+
+        const actividadesMes = await actividad.findMany({
+            where: {
+                run_alumno: run, fecha_actividad: {
+                    gte: fechaInicio,
+                    lt: fechaFin
                 }
             }
         })
-        res.status(200).json({ actividades })
+
+        actividadesMes.forEach((actividad) => {
+            const inicio = actividad.hora_inic_activdad;
+            const termino = actividad.hora_term_actividad;
+
+            if (inicio && termino) {
+                horasTotalesMes += ((termino.getTime() - inicio.getTime()) / (1000 * 60) / 60);
+            }
+
+        })
+
+
+        res.status(200).json({ alumno, horasTotales, horasTotalesMes })
+
     } catch (error: any) {
         res.status(500).json({ message: 'error en el server', error })
     }
@@ -394,8 +428,8 @@ export const filtrarActividades = async (req: Request, res: Response): Promise<v
             const actividadesFiltradas = await prismaActividad.findMany({
                 where: {
                     run_alumno: alumno?.run,
-                    area_trabajo:{
-                        nombre:area
+                    area_trabajo: {
+                        nombre: area
                     }
                 }, include: {
                     area_trabajo: {
@@ -428,10 +462,10 @@ export const filtrarActividades = async (req: Request, res: Response): Promise<v
                         gte: fechaInicio,
                         lt: fechaFin,
                     },
-                    area_trabajo:{
-                        nombre:area
+                    area_trabajo: {
+                        nombre: area
                     }
-                },include:{area_trabajo:{select:{nombre:true}}}
+                }, include: { area_trabajo: { select: { nombre: true } } }
             })
 
             res.status(200).json({ actividadesFiltradas })
