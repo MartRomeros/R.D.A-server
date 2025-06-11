@@ -137,13 +137,14 @@ export const detallesDelAlumnoMes = async (req: Request, res: Response): Promise
         actividadesPorMes.forEach((actividad) => {
             const horaInic = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
             const horaTerm = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
-            if (!horaInic.isValid || !horaTerm.isValid) {
-                console.warn('fecha invalidad detectada para actividad ID:', actividad.id_actividad)
+            if (actividad.estado == true) {
+                if (!horaInic.isValid || !horaTerm.isValid) {
+                    console.warn('fecha invalidad detectada para actividad ID:', actividad.id_actividad)
+                }
+                const diffEnHoras = horaTerm.diff(horaInic, 'hours').hours
+                horasTotalesMes += diffEnHoras
             }
-            const diffEnHoras = horaTerm.diff(horaInic, 'hours').hours
-            horasTotalesMes += diffEnHoras
         })
-
         //traer horas por area
         actividadesPorMes.forEach((actividad) => {
             let horaInicD
@@ -223,9 +224,6 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
     let horasComunicacion: number = 0
     let horasExtension: number = 0
     const token = req.cookies.token
-
-
-
     try {
         const email = traerMailDelToken(token) || ""
         const alumno = await prismaUsuario.findUnique({ where: { email: email } })
@@ -283,7 +281,6 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
                     break;
             }
         })
-
         res.status(200).json({
             horasArea: {
                 difusion: horasDifusion,
@@ -483,8 +480,8 @@ export const filtrarActividades = async (req: Request, res: Response): Promise<v
 }
 
 export const traerTotales = async (req: Request, res: Response): Promise<void> => {
-    
-    let horasMes:number = 0
+
+    let horasMes: number = 0
 
     const fechaActual = new Date()
     const mes = parseInt(`0${fechaActual.getMonth() + 1}`)
@@ -495,12 +492,16 @@ export const traerTotales = async (req: Request, res: Response): Promise<void> =
 
     try {
         //cantidad de alumnos
-        const alumnos = await usuario.count({where:{tipo_usuario_id:3}})
+        const alumnos = await usuario.count({ where: { tipo_usuario_id: 3 } })
         //cantidad de horas del mes
-        const actividadesMes = await  actividad.findMany({where:{fecha_actividad:{
-            gte:fechaInicio,
-            lt:fechaFin
-        }}})
+        const actividadesMes = await actividad.findMany({
+            where: {
+                fecha_actividad: {
+                    gte: fechaInicio,
+                    lt: fechaFin
+                }
+            }
+        })
 
         actividadesMes.forEach((actividad) => {
             const inicio = actividad.hora_inic_activdad;
@@ -512,10 +513,10 @@ export const traerTotales = async (req: Request, res: Response): Promise<void> =
         })
 
 
-        res.status(200).json({alumnos,horasMes})
-        
-    } catch (error:any) {
-        res.status(500).json({message:'error en el server'})
+        res.status(200).json({ alumnos, horasMes })
+
+    } catch (error: any) {
+        res.status(500).json({ message: 'error en el server' })
         console.error(error)
     }
 }

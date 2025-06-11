@@ -14,19 +14,22 @@ datasource db {
 }
 
 model Usuario {
-  id               Int            @id @default(autoincrement())
-  run              String         @unique
+  id               Int          @id @default(autoincrement())
+  run              String       @unique
   nombre           String
   apellido_paterno String
   apellido_materno String
-  fono             Int            @unique
-  email            String         @unique
+  fono             Int          @unique
+  email            String       @unique
   password         String?
   tipo_usuario_id  Int
-  tipo_usuario     Tipo_usuario   @relation(fields: [tipo_usuario_id], references: [id])
-  orden_compra     Orden_Compra[]
-  actividades      Actividad[]    @relation("UsuarioActividades")
-  solicitudes      Solicitud[]
+  tipo_usuario     Tipo_usuario @relation(fields: [tipo_usuario_id], references: [id])
+  area_trabajo_id  Int?
+  area_trabajo     Area_trabajo?  @relation(fields: [area_trabajo_id], references: [id])
+
+  orden_compra   Orden_Compra[]
+  actividades    Actividad[]    @relation("UsuarioActividades")
+  solicitudes    Solicitud[]
 }
 
 model Tipo_usuario {
@@ -70,4 +73,5 @@ model Area_trabajo {
   id        Int         @id @default(autoincrement())
   nombre    String      @unique
   actividad Actividad[]
+  usuario   Usuario[]
 }

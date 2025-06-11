@@ -107,7 +107,7 @@ export const recuperarClave = async (req: Request, res: Response): Promise<void>
 //REGISTRO
 export const registrar = async (req: Request, res: Response): Promise<void> => {
 
-    const { run, nombre, apellidoPaterno, apellidoMaterno, fono, email, tipoUsuario } = req.body
+    const { run, nombre, apellidoPaterno, apellidoMaterno, fono, email, tipoUsuario,areaTrabajoId } = req.body
     const claves = Object.keys(req.body)
 
     for (let i = 0; i < claves.length; i++) {
@@ -132,6 +132,7 @@ export const registrar = async (req: Request, res: Response): Promise<void> => {
                 fono: fono,
                 password: hashedPassword,
                 tipo_usuario_id: tipoUsuario,
+                area_trabajo_id:areaTrabajoId
             }
         })
 

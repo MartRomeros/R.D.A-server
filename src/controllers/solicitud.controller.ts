@@ -8,12 +8,12 @@ export const traerSolicitudes = async (req: Request, res: Response): Promise<voi
             {
                 include: {
                     actividad: true,
-                    alumno: true,            
+                    alumno: true,
                 },
             }
         )
 
-        res.status(200).json({solicitudes})
+        res.status(200).json({ solicitudes })
 
     } catch (error: any) {
         console.error(error)
@@ -21,4 +21,20 @@ export const traerSolicitudes = async (req: Request, res: Response): Promise<voi
 
     }
 
+}
+
+export const aprobarSolicitud = async (req: Request, res: Response): Promise<void> => {
+    const id = parseInt(req.params.id)
+    try {
+        await solicitud.update({
+            data: { estado: true },
+            where: { id: id }
+        })
+        res.status(200).json({ message: 'solicitud aprobada' })
+        
+    } catch (error: any) {
+        console.error(error)
+        res.status(500).json({ message: 'problemas en el server' })
+
+    }
 }
