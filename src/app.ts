@@ -6,6 +6,7 @@ import userRoutes from './routes/user.routes'
 import actividadRoutes from './routes/actividad.routes'
 import areaTrabajoRoutes from './routes/areaTrabajo.routes'
 import solicitudRoutes from './routes/solicitud.routes'
+import adminRoutes from './routes/admin.routes'
 import cookieParser from 'cookie-parser'
 
 
@@ -25,11 +26,13 @@ app.use(cors({
 }))
 
 
+
 app.use('/auth',authRoutes)
 app.use('/user',userRoutes)
 app.use('/actividad',actividadRoutes)
 app.use('/area_trabajo',areaTrabajoRoutes)
 app.use('/solicitudes',solicitudRoutes)
+app.use('/admin',adminRoutes)
 
 console.log('levantando aplicacion!')
 
