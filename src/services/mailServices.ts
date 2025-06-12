@@ -1,22 +1,21 @@
 import nodemailer from 'nodemailer'
 
-export const sendRecuperarClaveMail = async (destinatario:string) => {
+export const sendRecuperarClaveMail = async (destinatario: string, mensaje: string, subject: string, text: string) => {
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'registro.asistencias.duoc@gmail.com',
+            user: 'martinsantiago.se@gmail.com',
             pass: process.env.APLICATION_PASS
         }
     })
 
     const mailOptions = {
-        from: '"R.D.A" <registro.asistencias.duoc@gmail.com> ',
+        from: '"R.D.A" <martinsantiago.se@gmail.com> ',
         to: destinatario,
-        subject: 'Prueba con nodemailer',
-        text: 'Es un correo de prueba',
-        html: '<b>Este es un correo real enviado desde TypeScript y Nodemailer 🎉</b>'
-
+        subject: subject,
+        text: text,
+        html: mensaje
     }
 
     try {

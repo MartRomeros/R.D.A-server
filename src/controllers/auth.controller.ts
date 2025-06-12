@@ -4,6 +4,7 @@ import { Usuario } from '../models/interfaces'
 import { comparePasswords, generateToken, hashPassword } from "../services/authServices"
 import { sendRecuperarClaveMail } from "../services/mailServices"
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library"
+import { generarMailContrasena } from "../models/mailTemplates"
 
 
 //LOGIN
@@ -90,7 +91,9 @@ export const recuperarClave = async (req: Request, res: Response): Promise<void>
 
         await usuario.update({ data: { password: hashedPassword }, where: { email } })
 
-        sendRecuperarClaveMail(email)
+        const mensaje = generarMailContrasena()
+
+        sendRecuperarClaveMail(email,mensaje,'Cambio de contraseña!','Se ha generado un cambio de contraseña!')
 
         res.status(200).json({ message: 'clave actualizada!, en instantes te llegara un correo con las instrucciones!' })
 

@@ -1,5 +1,5 @@
 import express from 'express'
-import { detallesDelAlumnoMes, filtrarActividades, filtrarHorasMes, registrarActividad, traerActividadesByRun, traerTotales, traerTotalesAlumnos } from '../controllers/actividad.controller'
+import { detallesDelAlumnoMes, filtrarActividades, filtrarHorasMes, registrarActividad, traerActividadesByRun, traerTotales, traerTotalesAlumnos } from '../controllers/alumno/actividad.controller'
 import { authenticatedToken } from '../services/authServices'
 
 const router = express.Router()

@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import prismaActividad from '../models/actividad'
-import prismaUsuario from '../models/user'
-import actividad from "../models/actividad";
+import prismaActividad from '../../models/actividad'
+import prismaUsuario from '../../models/user'
+import actividad from "../../models/actividad";
 import { DateTime } from 'luxon'
-import { traerMailDelToken } from "../services/authServices";
-import usuario from "../models/user";
+import { traerMailDelToken } from "../../services/authServices";
+import usuario from "../../models/user";
 
 export const registrarActividad = async (req: Request, res: Response): Promise<void> => {
     const { fecha_actividad, hora_inic_activdad, hora_term_actividad, area_trabajo } = req.body

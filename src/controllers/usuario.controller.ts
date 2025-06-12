@@ -1,5 +1,4 @@
 import usuario from '../models/user'
-import actividad from '../models/actividad'
 import { Request, Response } from 'express'
 import { hashPassword, traerMailDelToken } from '../services/authServices'
 
@@ -45,35 +44,4 @@ export const actualizarUsuario = async (req: Request, res: Response): Promise<vo
         res.status(500).json({ error })
     }
 
-}
-
-export const traerAlumnosAyudantes = async (req: Request, res: Response) => {
-    try {
-        //alumnos ayudantes
-        const alumnos = await usuario.findMany({
-            where: { tipo_usuario: { id: 1 } }, include: { tipo_usuario: { select: { id: true } }, actividades: true }
-        })
-
-        const resultados = alumnos.map(usuario => {
-            let horasTotales = 0;
-            usuario.actividades.forEach(actividad => {
-                const inicio = actividad.hora_inic_activdad;
-                const termino = actividad.hora_term_actividad;
-
-                if (inicio && termino) {
-                    horasTotales += ((termino.getTime() - inicio.getTime()) / (1000 * 60) / 60);
-                }
-            })
-
-            return {
-                run: usuario.run,
-                nombre: usuario.nombre,
-                horasTotales: horasTotales
-            };
-        })
-
-        res.status(200).json({ resultados })
-    } catch (error: any) {
-        res.status(200).json({ error, message: 'error en el server!' })
-    }
 }
