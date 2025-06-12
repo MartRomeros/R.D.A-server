@@ -10,6 +10,11 @@ export interface Alumno {
 }
 
 
+interface Area_trabajo {
+    id: number,
+    nombre: string
+}
+
 export interface Usuario {
     id: number,
     run: string,
@@ -23,11 +28,13 @@ export interface Usuario {
 }
 
 export interface Actividad {
+    area_trabajo: Area_trabajo
+    area_trabajo_id: number,
+    estado: true,
+    fecha_actividad: Date,
+    hora_inic_actividad: Date,
+    hora_term_actividad: Date,
     id_actividad: number,
-    fecha_actividad: string,
-    hora_inic_actividad: string,
-    hora_term_actividad: string,
-    area_trabajo: string,
     run_alumno: string
 
 }

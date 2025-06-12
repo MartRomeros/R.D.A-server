@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import prismaSolicitud from "../models/solicitud";
-import actividad from "../models/actividad";
+import prismaSolicitud from "../../models/solicitud";
+import actividad from "../../models/actividad";
 
 export const traerSolicitudes = async (req: Request, res: Response): Promise<void> => {
     try {

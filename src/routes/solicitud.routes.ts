@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 import { authenticatedToken } from '../services/authServices'
-import { aprobarSolicitud, traerSolicitudes, traerSolicitudesById } from '../controllers/solicitud.controller'
+import { aprobarSolicitud, traerSolicitudes, traerSolicitudesById } from '../controllers/admin/solicitud.controller'
 
 const router = express.Router()
 
