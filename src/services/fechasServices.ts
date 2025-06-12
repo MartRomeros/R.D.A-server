@@ -26,3 +26,30 @@ export const formatearActividad = (actividad: any) => {
     actividad.hora_term_actividad = horaTermCL
     return actividad
 }
+
+export const traerFechaInicioMes = () => {
+
+    const anio = new Date().getFullYear()
+    const mes = parseInt(`0${new Date().getMonth() + 1}`)
+    const fechaInicio = new Date(anio, mes - 1, 1)
+
+    return fechaInicio
+}
+
+export const traerFechaFinMes = () => {
+    const anio = new Date().getFullYear()
+    const mes = parseInt(`0${new Date().getMonth() + 1}`)
+    const fechaFin = new Date(anio, mes, 1)
+
+    return fechaFin
+}
+
+export const calcularDiferenciaHoras = (actividad: any): number => {
+    let diferencia: number = 0
+    const inicio = actividad.hora_inic_activdad;
+    const termino = actividad.hora_term_actividad;
+    if (inicio && termino) {
+        diferencia += ((termino.getTime() - inicio.getTime()) / (1000 * 60) / 60);
+    }
+    return diferencia
+}

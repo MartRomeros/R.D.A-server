@@ -7,6 +7,7 @@ import actividadRoutes from './routes/actividad.routes'
 import areaTrabajoRoutes from './routes/areaTrabajo.routes'
 import solicitudRoutes from './routes/solicitud.routes'
 import adminRoutes from './routes/admin.routes'
+import alumnoRoutes from './routes/alumno.routes'
 import cookieParser from 'cookie-parser'
 
 
@@ -33,6 +34,7 @@ app.use('/actividad',actividadRoutes)
 app.use('/area_trabajo',areaTrabajoRoutes)
 app.use('/solicitudes',solicitudRoutes)
 app.use('/admin',adminRoutes)
+app.use('/alumno',alumnoRoutes)
 
 console.log('levantando aplicacion!')
 
