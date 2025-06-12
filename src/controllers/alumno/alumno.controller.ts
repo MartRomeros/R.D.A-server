@@ -105,16 +105,16 @@ export const traerHorasAreaMes = async (req: Request, res: Response): Promise<vo
         })
         actividades.forEach((actividad) => {
             switch (actividad.area_trabajo_id) {
-                case 6:
+                case 1:
                     difusion += calcularDiferenciaHoras(actividad)
                     break;
-                case 7:
+                case 2:
                     extension += calcularDiferenciaHoras(actividad)
                     break;
-                case 8:
+                case 3:
                     comunicacion += calcularDiferenciaHoras(actividad)
                     break;
-                case 9:
+                case 4:
                     desarrollo_laboral += calcularDiferenciaHoras(actividad)
                     break;
                 default:

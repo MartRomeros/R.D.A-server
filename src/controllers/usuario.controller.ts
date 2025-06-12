@@ -51,7 +51,7 @@ export const traerAlumnosAyudantes = async (req: Request, res: Response) => {
     try {
         //alumnos ayudantes
         const alumnos = await usuario.findMany({
-            where: { tipo_usuario: { id: 3 } }, include: { tipo_usuario: { select: { id: true } }, actividades: true }
+            where: { tipo_usuario: { id: 1 } }, include: { tipo_usuario: { select: { id: true } }, actividades: true }
         })
 
         const resultados = alumnos.map(usuario => {

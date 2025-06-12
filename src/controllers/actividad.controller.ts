@@ -158,7 +158,7 @@ export const detallesDelAlumnoMes = async (req: Request, res: Response): Promise
             let horaTermE
 
             switch (actividad.area_trabajo_id) {
-                case 6:
+                case 1:
                     horaInicD = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermD = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicD.isValid || !horaTermD.isValid) {
@@ -167,7 +167,7 @@ export const detallesDelAlumnoMes = async (req: Request, res: Response): Promise
                     const diffEnHorasD = horaTermD.diff(horaInicD, 'hours').hours
                     horasDifusion += diffEnHorasD
                     break;
-                case 9:
+                case 4:
                     horaInicDL = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermDL = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicDL.isValid || !horaTermDL.isValid) {
@@ -176,7 +176,7 @@ export const detallesDelAlumnoMes = async (req: Request, res: Response): Promise
                     const diffEnHorasDL = horaTermDL.diff(horaInicDL, 'hours').hours
                     horasDesarrolloLaboral += diffEnHorasDL
                     break;
-                case 7:
+                case 2:
                     horaInicE = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermE = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicE.isValid || !horaTermE.isValid) {
@@ -185,7 +185,7 @@ export const detallesDelAlumnoMes = async (req: Request, res: Response): Promise
                     const diffEnHorasE = horaTermE.diff(horaInicE, 'hours').hours
                     horasExtension += diffEnHorasE
                     break;
-                case 8:
+                case 3:
                     horaInicC = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermC = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicC.isValid || !horaTermC.isValid) {
@@ -241,7 +241,7 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
             let horaTermE
 
             switch (actividad.area_trabajo_id) {
-                case 6:
+                case 1:
                     horaInicD = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermD = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicD.isValid || !horaTermD.isValid) {
@@ -250,7 +250,7 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
                     const diffEnHorasD = horaTermD.diff(horaInicD, 'hours').hours
                     horasDifusion += diffEnHorasD
                     break;
-                case 9:
+                case 4:
                     horaInicDL = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermDL = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicDL.isValid || !horaTermDL.isValid) {
@@ -259,7 +259,7 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
                     const diffEnHorasDL = horaTermDL.diff(horaInicDL, 'hours').hours
                     horasDesarrolloLaboral += diffEnHorasDL
                     break;
-                case 7:
+                case 2:
                     horaInicE = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermE = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicE.isValid || !horaTermE.isValid) {
@@ -268,7 +268,7 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
                     const diffEnHorasE = horaTermE.diff(horaInicE, 'hours').hours
                     horasExtension += diffEnHorasE
                     break;
-                case 8:
+                case 3:
                     horaInicC = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermC = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicC.isValid || !horaTermC.isValid) {
@@ -337,7 +337,7 @@ export const filtrarHorasMes = async (req: Request, res: Response) => {
             let horaTermE
 
             switch (actividad.area_trabajo_id) {
-                case 6:
+                case 1:
                     horaInicD = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermD = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicD.isValid || !horaTermD.isValid) {
@@ -346,7 +346,7 @@ export const filtrarHorasMes = async (req: Request, res: Response) => {
                     const diffEnHorasD = horaTermD.diff(horaInicD, 'hours').hours
                     horasDifusion += diffEnHorasD
                     break;
-                case 9:
+                case 4:
                     horaInicDL = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermDL = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicDL.isValid || !horaTermDL.isValid) {
@@ -355,7 +355,7 @@ export const filtrarHorasMes = async (req: Request, res: Response) => {
                     const diffEnHorasDL = horaTermDL.diff(horaInicDL, 'hours').hours
                     horasDesarrolloLaboral += diffEnHorasDL
                     break;
-                case 7:
+                case 2:
                     horaInicE = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermE = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicE.isValid || !horaTermE.isValid) {
@@ -364,7 +364,7 @@ export const filtrarHorasMes = async (req: Request, res: Response) => {
                     const diffEnHorasE = horaTermE.diff(horaInicE, 'hours').hours
                     horasExtension += diffEnHorasE
                     break;
-                case 8:
+                case 3:
                     horaInicC = DateTime.fromJSDate(actividad.hora_inic_activdad, { zone: 'America/Santiago' });
                     horaTermC = DateTime.fromJSDate(actividad.hora_term_actividad, { zone: 'America/Santiago' })
                     if (!horaInicC.isValid || !horaTermC.isValid) {

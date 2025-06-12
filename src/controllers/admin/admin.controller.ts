@@ -30,7 +30,7 @@ export const traerAlumnos = async (req: Request, res: Response): Promise<void> =
 
 
         const alumnos = await prismAlumno.findMany({
-            where: { tipo_usuario_id: 3 },
+            where: { tipo_usuario_id: 1 },
             include: {
                 actividades: {
                     where: {
@@ -131,7 +131,7 @@ export const traerTotales = async (req: Request, res: Response): Promise<any> =>
     try {
         const administrador = await prismaAdmin.findUnique({ where: { email: email } })
         //traer alumnos ayudantes
-        const alumnos = await prismAlumno.findMany({ where: { tipo_usuario_id: 3 } })
+        const alumnos = await prismAlumno.findMany({ where: { tipo_usuario_id: 1 } })
         alumnos.forEach(() => {
             alumnosAyudantes++
         })
