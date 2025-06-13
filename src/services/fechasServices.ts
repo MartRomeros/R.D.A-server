@@ -4,14 +4,17 @@ import { Actividad } from "../models/interfaces"
 const horaCL = Intl.DateTimeFormat('es-CL', {
     timeZone: 'America/Santiago',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
+    hour12:false,
+    
 })
 
 const fechaCL = new Intl.DateTimeFormat('es-CL', {
     timeZone: 'America/Santiago',
     day: '2-digit',
     month: '2-digit',
-    year: '2-digit'
+    year: '2-digit',
+    
 })
 
 export const formatearActividad = (actividad: any) => {

@@ -5,6 +5,7 @@ import actividad from "../../models/actividad";
 import { DateTime } from 'luxon'
 import { traerMailDelToken } from "../../services/authServices";
 import usuario from "../../models/user";
+import { formatearActividad } from "../../services/fechasServices";
 
 export const registrarActividad = async (req: Request, res: Response): Promise<void> => {
     const { fecha_actividad, hora_inic_activdad, hora_term_actividad, area_trabajo } = req.body
@@ -55,9 +56,6 @@ export const traerActividadesByRun = async (req: Request, res: Response): Promis
 
     let horasTotales: number = 0
     let horasTotalesMes: number = 0
-
-
-
     try {
         const alumno = await usuario.findUnique({ where: { run: run } })
         const actividades = await actividad.findMany({ where: { run_alumno: run } })
@@ -436,6 +434,9 @@ export const filtrarActividades = async (req: Request, res: Response): Promise<v
                     }
                 }
             })
+            actividadesFiltradas.forEach((actividad)=>{
+                actividad = formatearActividad(actividad)
+            })
             res.status(200).json({ actividadesFiltradas })
         } else if (!area && mesYanio) {
 
@@ -447,6 +448,9 @@ export const filtrarActividades = async (req: Request, res: Response): Promise<v
                         lt: fechaFin
                     }
                 }
+            })
+            actividadesFiltradas.forEach((actividad)=>{
+                actividad = formatearActividad(actividad)
             })
             res.status(200).json({ actividadesFiltradas })
 
@@ -464,11 +468,17 @@ export const filtrarActividades = async (req: Request, res: Response): Promise<v
                     }
                 }, include: { area_trabajo: { select: { nombre: true } } }
             })
+            actividadesFiltradas.forEach((actividad)=>{
+                actividad = formatearActividad(actividad)
+            })
 
             res.status(200).json({ actividadesFiltradas })
         } else {
 
             const actividadesFiltradas = await prismaActividad.findMany({ include: { area_trabajo: true } })
+            actividadesFiltradas.forEach((actividad)=>{
+                actividad = formatearActividad(actividad)
+            })
             res.status(200).json({ actividadesFiltradas })
         }
 

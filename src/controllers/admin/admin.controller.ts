@@ -3,7 +3,8 @@ import { traerMailDelToken } from "../../services/authServices";
 import prismaAdmin from '../../models/user'
 import prismAlumno from '../../models/user'
 import prismaActividad from '../../models/actividad'
-import { formatearActividad } from "../../services/fechasServices";
+import { formatearActividad, traerFechaFinMes, traerFechaInicioMes } from "../../services/fechasServices";
+import { traerHorasTotalesMes } from "../../services/adminService";
 
 //GET:ID esta funcion trae el administrador
 export const traerAdmin = async (req: Request, res: Response): Promise<void> => {
@@ -89,7 +90,7 @@ export const traerAlumno = async (req: Request, res: Response): Promise<any> => 
             }, include: { area_trabajo: true }
         })
 
-        actividadesMes.forEach((actividad:any) => {
+        actividadesMes.forEach((actividad: any) => {
 
             const inicio = actividad.hora_inic_activdad;
             const termino = actividad.hora_term_actividad;
@@ -103,7 +104,7 @@ export const traerAlumno = async (req: Request, res: Response): Promise<any> => 
         })
 
 
-        res.status(200).json({ detalles: { ...alumno, horasTotales, horasTotalesMes,actividadesMes } });
+        res.status(200).json({ detalles: { ...alumno, horasTotales, horasTotalesMes, actividadesMes } });
 
     } catch (error) {
         res.status(500).json({ message: 'error en el server' })
@@ -179,4 +180,34 @@ export const traerTotales = async (req: Request, res: Response): Promise<any> =>
         res.status(500).json({ message: 'error en el server' })
     }
 
+}
+
+export const exportarResumenMes = async (req: Request, res: Response): Promise<void> => {
+    try {
+
+        const alumnos = await prismAlumno.findMany({
+            include: {
+                actividades: {
+                    where: {
+                        fecha_actividad: {
+                            gte: traerFechaInicioMes(),
+                            lt: traerFechaFinMes()
+                        },
+                        estado: true
+                    }, include: {
+                        area_trabajo: true
+                    }
+                }
+            }
+        })
+
+        const alumnoResumen = alumnos.map(alumno => ({
+            ...alumno, // conserva todas las propiedades originales
+            horasTotalesMes: traerHorasTotalesMes(alumno.actividades)
+        }));
+
+        res.status(200).json({ alumnoResumen })
+    } catch (error) {
+        res.status(500).json({ message: 'error en el server' })
+    }
 }
