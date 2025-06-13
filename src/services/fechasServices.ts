@@ -9,7 +9,7 @@ const horaCL = Intl.DateTimeFormat('es-CL', {
     
 })
 
-const fechaCL = new Intl.DateTimeFormat('es-CL', {
+export const fechaCL = new Intl.DateTimeFormat('es-CL', {
     timeZone: 'America/Santiago',
     day: '2-digit',
     month: '2-digit',

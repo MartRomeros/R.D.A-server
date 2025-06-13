@@ -5,7 +5,9 @@ import actividad from "../../models/actividad";
 import { DateTime } from 'luxon'
 import { traerMailDelToken } from "../../services/authServices";
 import usuario from "../../models/user";
-import { formatearActividad } from "../../services/fechasServices";
+import { fechaCL, formatearActividad } from "../../services/fechasServices";
+import { notifyAdmins } from "../../sockets/socketManager";
+import { io } from "../../server";
 
 export const registrarActividad = async (req: Request, res: Response): Promise<void> => {
     const { fecha_actividad, hora_inic_activdad, hora_term_actividad, area_trabajo } = req.body
@@ -33,6 +35,8 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
                 estado: false
             }
         })
+
+        notifyAdmins(io,`📌 Actividad registrada por ${alumno?.nombre || 'un alumno'} con fecha: ${fechaCL.format(new Date(fecha_actividad))}`)
         res.status(201).json({ message: 'actividad registrada!' })
 
 
