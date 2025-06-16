@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import prismaSolicitud from "../../models/solicitud";
-import actividad from "../../models/actividad";
+import { notifyStudents } from "../../sockets/socketManager";
+import { io } from "../../server";
+import { fechaCL, formatearActividad } from "../../services/fechasServices";
 
 export const traerSolicitudes = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -43,6 +45,17 @@ export const aprobarSolicitud = async (req: Request, res: Response): Promise<voi
             data: { estado: true },
             where: { id: id }
         })
+
+        const solicitudAprobada = await prismaSolicitud.findUnique({
+            where: { id },
+            include: {
+                alumno: true,
+                actividad: true
+            }
+        })
+
+        notifyStudents(io, `📌 Solicitud aprobada para el alumno: ${solicitudAprobada?.alumno.nombre} ${solicitudAprobada?.alumno.apellido_paterno} con fecha: ${fechaCL.format(solicitudAprobada?.actividad.fecha_actividad)}`)
+
         res.status(200).json({ message: 'solicitud aprobada' })
 
     } catch (error: any) {
