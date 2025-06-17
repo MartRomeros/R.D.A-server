@@ -3,8 +3,9 @@ import { traerMailDelToken } from "../../services/authServices";
 import prismaAdmin from '../../models/user'
 import prismAlumno from '../../models/user'
 import prismaActividad from '../../models/actividad'
-import { formatearActividad, traerFechaFinMes, traerFechaInicioMes } from "../../services/fechasServices";
-import { traerHorasTotalesMes } from "../../services/adminService";
+import { calcularDiferenciaHoras, formatearActividad, traerFechaFinMes, traerFechaInicioMes } from "../../services/fechasServices";
+import { traerHorasTotalesArea, traerHorasTotalesMes } from "../../services/adminService";
+import actividad from "../../models/actividad";
 
 //GET:ID esta funcion trae el administrador
 export const traerAdmin = async (req: Request, res: Response): Promise<void> => {
@@ -186,6 +187,7 @@ export const exportarResumenMes = async (req: Request, res: Response): Promise<v
     try {
 
         const alumnos = await prismAlumno.findMany({
+            where: { tipo_usuario_id: 1 },
             include: {
                 actividades: {
                     where: {
@@ -201,12 +203,21 @@ export const exportarResumenMes = async (req: Request, res: Response): Promise<v
             }
         })
 
-        const alumnoResumen = alumnos.map(alumno => ({
-            ...alumno, // conserva todas las propiedades originales
-            horasTotalesMes: traerHorasTotalesMes(alumno.actividades)
-        }));
+        const resumenMes: any = { resumen: [] }
 
-        res.status(200).json({ alumnoResumen })
+        alumnos.forEach((alumno) => {
+            const resumenAlumno = {
+                nombre: `${alumno.nombre} ${alumno.apellido_paterno} ${alumno.apellido_materno}`,
+                run: alumno.run,
+                horasTotalesArea: traerHorasTotalesArea(alumno.actividades),
+                totales:traerHorasTotalesMes(alumno.actividades)
+
+            }
+            resumenMes.resumen.push(resumenAlumno)
+
+        })
+
+        res.status(200).json({ resumenMes })
     } catch (error) {
         res.status(500).json({ message: 'error en el server' })
     }

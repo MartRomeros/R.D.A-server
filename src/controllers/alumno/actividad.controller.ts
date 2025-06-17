@@ -15,6 +15,7 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
 
     for (let i = 0; i < claves.length; i++) {
         if (!req.body[claves[i]]) {
+            console.log(claves[i])
             res.status(400).json({ message: `Campo ${claves[i]} incompleto!` })
             return
         }
@@ -229,7 +230,7 @@ export const traerTotalesAlumnos = async (req: Request, res: Response): Promise<
     try {
         const email = traerMailDelToken(token) || ""
         const alumno = await prismaUsuario.findUnique({ where: { email: email } })
-        const actividades = await actividad.findMany({ where: { run_alumno: alumno?.run } });
+        const actividades = await actividad.findMany({ where: { run_alumno: alumno?.run,estado:true } });
         //traer horas por area
         actividades.forEach((actividad) => {
             let horaInicD

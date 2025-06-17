@@ -1,6 +1,6 @@
 const tarifa = parseInt(process.env.TARIFA!) || 2450
 
-export const traerHorasTotalesMes = (actividades: any[]) => {
+export const traerHorasTotalesArea = (actividades: any[]) => {
     let montoDifusion: number = 0
     let montoExtension: number = 0
     let montoComunicacion: number = 0
@@ -26,7 +26,7 @@ export const traerHorasTotalesMes = (actividades: any[]) => {
                 const terminoE = actividad.hora_term_actividad;
                 if (inicioE && terminoE) {
                     horasExtension += ((terminoE.getTime() - inicioE.getTime()) / (1000 * 60) / 60);
-                    montoExtension += Math.round(horasDifusion * tarifa)
+                    montoExtension += Math.round(horasExtension * tarifa)
                 }
                 break;
             case 3:
@@ -34,7 +34,7 @@ export const traerHorasTotalesMes = (actividades: any[]) => {
                 const terminoC = actividad.hora_term_actividad;
                 if (inicioC && terminoC) {
                     horasComunicacion += ((terminoC.getTime() - inicioC.getTime()) / (1000 * 60) / 60);
-                    montoComunicacion += Math.round(horasDifusion * tarifa)
+                    montoComunicacion += Math.round(horasComunicacion * tarifa)
                 }
                 break;
             case 4:
@@ -42,7 +42,7 @@ export const traerHorasTotalesMes = (actividades: any[]) => {
                 const terminoDL = actividad.hora_term_actividad;
                 if (inicioDL && terminoDL) {
                     horasDesarrolloLaboral += ((terminoDL.getTime() - inicioDL.getTime()) / (1000 * 60) / 60);
-                    montoDesarrolloLaboral += Math.round(horasDifusion * tarifa)
+                    montoDesarrolloLaboral += Math.round(horasDesarrolloLaboral * tarifa)
                 }
                 break;
             default:
@@ -56,5 +56,22 @@ export const traerHorasTotalesMes = (actividades: any[]) => {
         { area: 'Comercial', horasRealizadas: horasComunicacion, totalAcumulado: montoComunicacion, responsable: 'Carlos Contreras' },
         { area: 'Punto Estudiantil', horasRealizadas: horasDesarrolloLaboral, totalAcumulado: montoDesarrolloLaboral, responsable: 'Ramón Griñen' },
     ].filter(item => item.horasRealizadas > 0 && item.totalAcumulado > 0);
+
+}
+
+export const traerHorasTotalesMes = (actividades: any[]) => {
+    let horasTotales: number = 0
+    let montoTotal: number = 0
+
+    actividades.forEach((actividad) => {
+        const inicioDL = actividad.hora_inic_activdad;
+        const terminoDL = actividad.hora_term_actividad;
+        if (inicioDL && terminoDL) {
+            horasTotales += ((terminoDL.getTime() - inicioDL.getTime()) / (1000 * 60) / 60);
+            montoTotal += Math.round(horasTotales * tarifa)
+        }
+    })
+
+    return { horasTotales, montoTotal }
 
 }

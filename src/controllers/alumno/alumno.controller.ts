@@ -97,7 +97,7 @@ export const traerHorasAreaMes = async (req: Request, res: Response): Promise<vo
                 fecha_actividad: {
                     gte: traerFechaInicioMes(),
                     lt: traerFechaFinMes()
-                },
+                },estado:true
             },
             include: {
                 area_trabajo: true
