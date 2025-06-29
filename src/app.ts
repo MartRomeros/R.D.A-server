@@ -6,7 +6,7 @@ import usuarioRoutes from './routes/usuarioRoutes'
 import alumnoRoutes from './routes/alumnoRoutes'
 import areaTrabajoRoutes from './routes/areaTrabajo.routes'
 import cookieParser from 'cookie-parser'
-import {Pool} from 'pg'
+import { Pool } from 'pg'
 
 
 dotenv.config()
@@ -18,10 +18,10 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.use(cors({
-    origin:true,
-    methods:['GET','POST','PUT'],
-    allowedHeaders:['Content-Type','Authorization'],
-    credentials:true
+    origin: true,
+    methods: ['GET', 'POST', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
 }))
 
 export const pool = new Pool({
@@ -30,15 +30,19 @@ export const pool = new Pool({
     database: process.env.DATABASE,
     password: process.env.PASSWORD,
     port: parseInt(process.env.PG_PORT || '5432'),
-    max:100
+    max: 100,
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false, // Acepta certificados autofirmados (en producción puedes usar certificados válidos)
+    },
 })
 
 
 
-app.use('/auth',authRoutes)
-app.use('/usuario',usuarioRoutes)
-app.use('/area_trabajo',areaTrabajoRoutes)
-app.use('/alumno',alumnoRoutes)
+app.use('/auth', authRoutes)
+app.use('/usuario', usuarioRoutes)
+app.use('/area_trabajo', areaTrabajoRoutes)
+app.use('/alumno', alumnoRoutes)
 
 console.log('levantando aplicacion!')
 
