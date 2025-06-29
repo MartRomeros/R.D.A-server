@@ -2,13 +2,11 @@ import dotenv from 'dotenv' //importamos dotenv para manejar variables de entorn
 import express from 'express' //importamos el framework express
 import cors from 'cors'
 import authRoutes from './routes/auth.routes'
-import userRoutes from './routes/user.routes'
-import actividadRoutes from './routes/actividad.routes'
+import usuarioRoutes from './routes/usuarioRoutes'
+import alumnoRoutes from './routes/alumnoRoutes'
 import areaTrabajoRoutes from './routes/areaTrabajo.routes'
-import solicitudRoutes from './routes/solicitud.routes'
-import adminRoutes from './routes/admin.routes'
-import alumnoRoutes from './routes/alumno.routes'
 import cookieParser from 'cookie-parser'
+import {Pool} from 'pg'
 
 
 dotenv.config()
@@ -26,14 +24,20 @@ app.use(cors({
     credentials:true
 }))
 
+export const pool = new Pool({
+    host: process.env.HOST,
+    user: process.env.USER,
+    database: process.env.DATABASE,
+    password: process.env.PASSWORD,
+    port: parseInt(process.env.PG_PORT || '5432'),
+    max:100
+})
+
 
 
 app.use('/auth',authRoutes)
-app.use('/user',userRoutes)
-app.use('/actividad',actividadRoutes)
+app.use('/usuario',usuarioRoutes)
 app.use('/area_trabajo',areaTrabajoRoutes)
-app.use('/solicitudes',solicitudRoutes)
-app.use('/admin',adminRoutes)
 app.use('/alumno',alumnoRoutes)
 
 console.log('levantando aplicacion!')

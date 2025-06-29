@@ -1,16 +1,4 @@
-export interface Alumno {
-    id_alumno: number,
-    run_alumno: string,
-    nombre_alumno: string,
-    apellido_paterno_alumno: string,
-    apellido_materno_alumno: string,
-    fono_alumno: number,
-    email_alumno: string,
-    password: string | null
-}
-
-
-interface Area_trabajo {
+export interface Area_trabajo {
     id: number,
     nombre: string
 }
@@ -20,7 +8,7 @@ export interface Usuario {
     run: string,
     nombre: string,
     apellido_paterno: string,
-    apellido_materno: string,
+    apellido_materno: string | null,   
     fono: number,
     email: string,
     password: string | null,
@@ -37,4 +25,9 @@ export interface Actividad {
     id_actividad: number,
     run_alumno: string
 
+}
+
+export interface horasArea{
+    nombre:string,
+    duracion_horas:number
 }

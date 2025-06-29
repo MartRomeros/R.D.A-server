@@ -1,10 +1,8 @@
-import expres from 'express'
-import { authenticatedToken } from '../services/authServices'
-import { traerAreaTrabajo } from '../controllers/areaTrabajo.controller'
+import express from 'express'
+import { traerAreasTrabajo } from '../controllers/areasTrabajoController'
 
+const router = express.Router()
 
-const router = expres.Router()
-
-router.get('/todos',authenticatedToken,traerAreaTrabajo)
+router.get('/', traerAreasTrabajo)
 
 export default router

@@ -1,4 +1,3 @@
-import actividad from "../models/actividad"
 import { Actividad } from "../models/interfaces"
 
 const horaCL = Intl.DateTimeFormat('es-CL', {

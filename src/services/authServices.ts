@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { Usuario } from '../models/interfaces'
 import { NextFunction, Request, Response } from 'express'
+import { Usuario } from '../models/interfaces'
+
 
 
 //encriptar la password
@@ -33,7 +34,6 @@ export const authenticatedToken = (req: Request, res: Response, next: NextFuncti
     jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
 
         if (err) {
-            console.log('error en la autenticacion', err)
             return res.status(403).json({ message: 'No tienes acceso a este recurso' })
         }
 
