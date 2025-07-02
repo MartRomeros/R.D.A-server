@@ -5,6 +5,7 @@ import authRoutes from './routes/auth.routes'
 import usuarioRoutes from './routes/usuarioRoutes'
 import alumnoRoutes from './routes/alumnoRoutes'
 import areaTrabajoRoutes from './routes/areaTrabajo.routes'
+import adminRoutes from './routes/adminRoutes'
 import cookieParser from 'cookie-parser'
 import { Pool } from 'pg'
 
@@ -43,6 +44,8 @@ app.use('/auth', authRoutes)
 app.use('/usuario', usuarioRoutes)
 app.use('/area_trabajo', areaTrabajoRoutes)
 app.use('/alumno', alumnoRoutes)
+app.use('/admin',adminRoutes)
+
 
 console.log('levantando aplicacion!')
 

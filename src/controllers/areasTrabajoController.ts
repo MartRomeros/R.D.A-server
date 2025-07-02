@@ -12,8 +12,7 @@ export const traerAreasTrabajo = async (req: Request, res: Response): Promise<vo
 
     try {
 
-        const results =  await client.query('SELECT FN_TRAER_AREAS_TRABAJO()')
-        
+        const results =  await client.query('SELECT FN_TRAER_AREAS_TRABAJO()')    
         const areasTrabajo:Area_trabajo[] = results.rows[0].fn_traer_areas_trabajo
 
         res.status(200).json(areasTrabajo)

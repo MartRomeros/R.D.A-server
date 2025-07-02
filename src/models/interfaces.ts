@@ -12,7 +12,8 @@ export interface Usuario {
     fono: number,
     email: string,
     password: string | null,
-    tipo_usuario_id: number
+    tipo_usuario_id: number,
+    area_trabajo_id:number
 }
 
 export interface Actividad {
@@ -30,4 +31,11 @@ export interface Actividad {
 export interface horasArea{
     nombre:string,
     duracion_horas:number
+}
+
+/* modelos para admin */
+export interface AdminAlumno{
+    nombre:string,
+    run:string,
+    fono:number
 }
