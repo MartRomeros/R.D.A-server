@@ -32,10 +32,10 @@ export const pool = new Pool({
     password: process.env.PASSWORD,
     port: parseInt(process.env.PG_PORT || '5432'),
     max: 100,
-    connectionString: process.env.DATABASE_URL,
+    /*connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false, // Acepta certificados autofirmados (en producción puedes usar certificados válidos)
-    },
+    },*/
 })
 
 

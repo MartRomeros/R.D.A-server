@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { traerMailDelToken } from "../services/authServices";
 import { pool } from "../app";
 import { AdminAlumno, Area_trabajo, Usuario } from "../models/interfaces";
+import { io } from "../server";
+import { notifyStudents } from "../sockets/socketManager";
 
 export const traerSolicitudesMesArea = async (req: Request, res: Response): Promise<void> => {
 
@@ -94,8 +96,8 @@ export const aprobarSolicitud = async (req: Request, res: Response): Promise<voi
     try {
 
         await client.query('CALL SP_ACTUALIZAR_SOLICITUD($1)', [solicitudId])
+        notifyStudents(io,`Se ha actualizado tu registro de hora! Id de solicitud: ${solicitudId}`)
         res.status(200).json({ message: 'solicitud aprobada' })
-
 
     } catch (error: any) {
 
