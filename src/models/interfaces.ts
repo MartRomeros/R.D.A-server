@@ -39,3 +39,10 @@ export interface AdminAlumno{
     run:string,
     fono:number
 }
+
+export interface ModeloOc{
+    "N° OC":number,
+    ALUMNO:string,
+    "RUT Alumno":string,
+    "Total BH OC":Number
+}

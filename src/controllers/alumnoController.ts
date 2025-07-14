@@ -44,8 +44,8 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
 
         await client.query('CALL SP_REGISTRAR_ACTIVIDAD($1,$2,$3,$4,$5)',
             [fecha_actividad, hora_inic_activdad, hora_term_actividad, area_trabajo, usuario.run])
-        
-        notifyAdmins(io,`Nueva actividad registrada: Fecha: ${fecha_actividad} Alumno: ${usuario.nombre} ${usuario.apellido_paterno}`)
+
+        notifyAdmins(io, `Nueva actividad registrada: Fecha: ${fecha_actividad} Alumno: ${usuario.nombre} ${usuario.apellido_paterno}`)
 
         res.status(200).json({ message: 'Actividad registrada' })
 
@@ -195,7 +195,7 @@ export const traerActividadesAreaMes = async (req: Request, res: Response): Prom
 
     let { mesYanio, area } = req.query;
     const mes = mesYanio === undefined ? null : mesYanio;
-    const areaID = area === undefined ? null :area
+    const areaID = area === undefined ? null : area
 
 
     if (!email) {
@@ -215,7 +215,7 @@ export const traerActividadesAreaMes = async (req: Request, res: Response): Prom
             return
         }
 
-        const actividadesResults = await client.query('SELECT FN_TRAER_ACTIVIDADES_AREA_MES($1,$2,$3)', [usuario.run, areaID,mes])
+        const actividadesResults = await client.query('SELECT FN_TRAER_ACTIVIDADES_AREA_MES($1,$2,$3)', [usuario.run, areaID, mes])
         const actividades = actividadesResults.rows[0].fn_traer_actividades_area_mes
 
         res.status(200).json({ actividades })
@@ -226,6 +226,32 @@ export const traerActividadesAreaMes = async (req: Request, res: Response): Prom
     } finally {
         client.release()
     }
+}
+
+export const obtenerOC = async (req: Request, res: Response): Promise<void> => {
+    const token = req.cookies.token
+    const email = traerMailDelToken(token)
+    const client = await pool.connect()
+
+    try {
+
+
+        const results = await client.query('SELECT FN_TRAER_USUARIO($1)', [email])
+        const usuario: Usuario = results.rows[0].fn_traer_usuario
+
+        const ocResults = await client.query('SELECT FN_TRAER_OC($1)',[usuario.id])
+        const oc = ocResults.rows[0].fn_traer_oc
+
+        res.status(200).json({oc})
+
+    } catch (error: any) {
+        res.status(500).json({ message: 'error 501' })
+        console.log(error)
+    } finally {
+        client.release()
+    }
+
+
 }
 
 

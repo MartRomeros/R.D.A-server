@@ -1,5 +1,5 @@
 import express from 'express'
-import { aprobarSolicitud, traerActividadesAlumno, traerAlumnosAyudantes, traerDetallesAlumnos, traerInfoAlumno, traerResumenMes, traerSolicitudActualizar, traerSolicitudes, traerSolicitudesMesArea } from '../controllers/adminController'
+import { aprobarSolicitud, registrarAllOC, registrarOC, traerActividadesAlumno, traerAlumnosAyudantes, traerDetallesAlumnos, traerInfoAlumno, traerResumenMes, traerSolicitudActualizar, traerSolicitudes, traerSolicitudesMesArea } from '../controllers/adminController'
 
 
 const router = express.Router()
@@ -13,5 +13,7 @@ router.get('/info_alumno/:run',traerInfoAlumno)
 router.get('/actividades_alumno/:run',traerActividadesAlumno)
 router.get('/exportar',traerDetallesAlumnos)
 router.put('/actualizar_solicitud/:id',aprobarSolicitud)
+router.post('/registrar_oc',registrarOC)
+router.post('/registrar_all_oc',registrarAllOC)
 
 export default router

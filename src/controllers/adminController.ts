@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { traerMailDelToken } from "../services/authServices";
 import { pool } from "../app";
-import { AdminAlumno, Area_trabajo, Usuario } from "../models/interfaces";
+import { AdminAlumno, Area_trabajo, ModeloOc, Usuario } from "../models/interfaces";
 import { io } from "../server";
 import { notifyStudents } from "../sockets/socketManager";
 
@@ -96,7 +96,7 @@ export const aprobarSolicitud = async (req: Request, res: Response): Promise<voi
     try {
 
         await client.query('CALL SP_ACTUALIZAR_SOLICITUD($1)', [solicitudId])
-        notifyStudents(io,`Se ha actualizado tu registro de hora! Id de solicitud: ${solicitudId}`)
+        notifyStudents(io, `Se ha actualizado tu registro de hora! Id de solicitud: ${solicitudId}`)
         res.status(200).json({ message: 'solicitud aprobada' })
 
     } catch (error: any) {
@@ -361,5 +361,41 @@ export const traerDetallesAlumnos = async (req: Request, res: Response): Promise
 
 }
 
+export const registrarOC = async (req: Request, res: Response): Promise<void> => {
+    const { run, oc } = req.body
+    const client = await pool.connect()
+    try {
+
+        await client.query('CALL SP_REGISTRAR_OC($1,$2)', [run, oc])
+        res.status(201).json({ message: 'Orden registrada' })
+
+    } catch (error: any) {
+        console.error(error)
+        res.status(500).json({ message: 'Error descnocido', error })
+    } finally {
+        client.release()
+    }
+}
+
+export const registrarAllOC = async (req: Request, res: Response): Promise<void> => {
+
+    const { dato } = req.body
+    const client = await pool.connect()
+    const datosAProcesar: ModeloOc[] = dato
+
+    try {
+        for (let oc of datosAProcesar) {
+            await client.query('CALL SP_REGISTRAR_OC($1,$2)', [oc["RUT Alumno"], oc["N° OC"]])
+        } 
+        res.status(201).json({ message: 'Orden registrada' })
+
+    } catch (error: any) {
+        console.error(error)
+        res.status(500).json({ message: 'Error descnocido', error })
+    } finally {
+        client.release()
+    }
+
+}
 
 
