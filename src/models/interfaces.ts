@@ -17,7 +17,6 @@ export interface Usuario {
 }
 
 export interface Actividad {
-    area_trabajo: Area_trabajo
     area_trabajo_id: number,
     estado: true,
     fecha_actividad: Date,

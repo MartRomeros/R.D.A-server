@@ -8,6 +8,9 @@ import areaTrabajoRoutes from './routes/areaTrabajo.routes'
 import adminRoutes from './routes/adminRoutes'
 import cookieParser from 'cookie-parser'
 import { Pool } from 'pg'
+//import path from 'path';;
+
+//const angularDistPath = path.join(process.cwd(), 'client', 'dist', 'mi-app-angular');
 
 
 dotenv.config()
@@ -25,6 +28,8 @@ app.use(cors({
     credentials: true
 }))
 
+//app.use(express.static(angularDistPath));
+
 export const pool = new Pool({
     host: process.env.HOST,
     user: process.env.USER,
@@ -32,10 +37,10 @@ export const pool = new Pool({
     password: process.env.PASSWORD,
     port: parseInt(process.env.PG_PORT || '5432'),
     max: 100,
-    /*connectionString: process.env.DATABASE_URL,
+    connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false, // Acepta certificados autofirmados (en producción puedes usar certificados válidos)
-    },*/
+    },
 })
 
 
@@ -45,9 +50,10 @@ app.use('/usuario', usuarioRoutes)
 app.use('/area_trabajo', areaTrabajoRoutes)
 app.use('/alumno', alumnoRoutes)
 app.use('/admin',adminRoutes)
-
-
-console.log('levantando aplicacion!')
+/*app.get('/home', (req, res) => {
+  res.sendFile(path.join(angularDistPath, 'index.html'));
+});
+console.log('levantando aplicacion!')*/
 
 
 
