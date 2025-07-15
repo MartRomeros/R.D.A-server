@@ -8,9 +8,9 @@ import areaTrabajoRoutes from './routes/areaTrabajo.routes'
 import adminRoutes from './routes/adminRoutes'
 import cookieParser from 'cookie-parser'
 import { Pool } from 'pg'
-//import path from 'path';;
+import path from 'path';;
 
-//const angularDistPath = path.join(process.cwd(), 'client', 'dist', 'mi-app-angular');
+const angularDistPath = path.join(process.cwd(), 'client','dist');
 
 
 dotenv.config()
@@ -28,7 +28,7 @@ app.use(cors({
     credentials: true
 }))
 
-//app.use(express.static(angularDistPath));
+app.use(express.static(angularDistPath));
 
 export const pool = new Pool({
     host: process.env.HOST,
@@ -40,7 +40,7 @@ export const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false, // Acepta certificados autofirmados (en producción puedes usar certificados válidos)
-    },
+    }
 })
 
 
@@ -50,10 +50,11 @@ app.use('/usuario', usuarioRoutes)
 app.use('/area_trabajo', areaTrabajoRoutes)
 app.use('/alumno', alumnoRoutes)
 app.use('/admin',adminRoutes)
-/*app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(angularDistPath, 'index.html'));
 });
-console.log('levantando aplicacion!')*/
+
+console.log('levantando aplicacion!')
 
 
 
