@@ -31,7 +31,10 @@ export const authenticatedToken = (req: Request, res: Response, next: NextFuncti
         token = authHeader && authHeader.split(' ')[1];
     }
 
+    console.log('token', token)
+
     if (!token) {
+        console.log('no token provided')
         res.status(401).json({ message: 'no autorizado!' })
         return
     }
