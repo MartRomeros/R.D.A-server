@@ -88,7 +88,7 @@ export const recuperarClave = async (req: Request, res: Response): Promise<void>
 
     try {
 
-        const results = await client.query('SELECT FN_TRAER_USUARIO($1)', [email])
+        const results = await client.query('SELECT FN_TRAER_USUARIO($1)', [email.toLowerCase()])
 
         const usuario: Usuario = results.rows[0].fn_traer_usuario
 
@@ -99,7 +99,7 @@ export const recuperarClave = async (req: Request, res: Response): Promise<void>
 
         const password: string = usuario.apellido_paterno[0].toLocaleUpperCase() + usuario.run
         const hashedPassword: string = await hashPassword(password)
-        await client.query('CALL SP_ACTUALIZAR_PSSWD($1,$2)', [email, hashedPassword])
+        await client.query('CALL SP_ACTUALIZAR_PSSWD($1,$2)', [email.toLowerCase(), hashedPassword])
 
         const mensaje = generarMailContrasena()
 
