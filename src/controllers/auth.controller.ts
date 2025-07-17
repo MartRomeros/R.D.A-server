@@ -49,6 +49,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             sameSite: 'none',
             maxAge: 24 * 60 * 60 * 1000
         })
+
+        console.log('Cookie enviada con options secure y sameSite none');
         
         res.status(200).json({ tipo_usuario_id: usuario.tipo_usuario_id })
 
