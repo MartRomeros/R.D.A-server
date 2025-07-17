@@ -51,7 +51,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         })
 
         console.log('Cookie enviada con options secure y sameSite none');
-        const token1 = traerMailDelToken(token)
+        const token1 = req.cookies.token || ''
         console.log('Token del usuario:', token1)
         
         res.status(200).json({ tipo_usuario_id: usuario.tipo_usuario_id })
