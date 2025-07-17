@@ -273,7 +273,11 @@ export const traerActividadesAreaMes = async (req: Request, res: Response): Prom
 }
 
 export const obtenerOC = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
     const client = await pool.connect()
 
