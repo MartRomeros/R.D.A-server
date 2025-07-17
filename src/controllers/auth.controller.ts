@@ -26,7 +26,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     try {
 
 
-        const results = await client.query('SELECT FN_TRAER_USUARIO($1)', [email])
+        const results = await client.query('SELECT FN_TRAER_USUARIO($1)', [email.toLoweCase()])
 
         const usuario: Usuario = results.rows[0].fn_traer_usuario
 
