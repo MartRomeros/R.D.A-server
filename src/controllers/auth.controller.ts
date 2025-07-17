@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { comparePasswords, generateToken, hashPassword } from "../services/authServices"
+import { comparePasswords, generateToken, hashPassword, traerMailDelToken } from "../services/authServices"
 import { Usuario } from "../models/interfaces"
 import { pool } from "../app"
 import { generarMailContrasena } from "../models/mailTemplates"
@@ -51,6 +51,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         })
 
         console.log('Cookie enviada con options secure y sameSite none');
+        const token1 = traerMailDelToken(token)
+        console.log('Token del usuario:', token1)
         
         res.status(200).json({ tipo_usuario_id: usuario.tipo_usuario_id })
 
