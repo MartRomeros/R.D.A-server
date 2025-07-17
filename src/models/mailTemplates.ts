@@ -20,7 +20,7 @@ export const generarMailContrasena = (): string => {
         Si no solicitaste este cambio, por favor comunícate con el soporte técnico de inmediato.
       </p>
       <div style="text-align: center; margin-top: 30px;">
-        <a href="https://tusitio.com/login" style="display: inline-block; background-color: #4CAF50; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-size: 16px;">Iniciar sesión</a>
+        <a href="https://rda-registro.cl/login" style="display: inline-block; background-color: #4CAF50; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-size: 16px;">Iniciar sesión</a>
       </div>
     </div>
   </div>
