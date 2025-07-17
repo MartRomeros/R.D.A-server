@@ -1,4 +1,4 @@
-levantar servidor typescript: npm run dev
-buildear servidor: npm run build
-levantar servidor buildeado: npm start
-levantar prisma: npx prisma init
+comando para lenvantar localmente el servidor o en un vps dedicado: node dist/server.js
+comando para levantarlo en cpanel: node productionServer.js
+
+

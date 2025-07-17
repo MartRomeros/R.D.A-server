@@ -5,7 +5,7 @@ import { setupSocketIO } from './sockets/socketManager'
 
 const PORT = process.env.PORT
 
-const httpServer = http.createServer(app)
+const httpServer:any = http.createServer(app)
 
 const io = new Server(httpServer, {
     cors: {

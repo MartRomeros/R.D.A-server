@@ -367,6 +367,7 @@ export const registrarOC = async (req: Request, res: Response): Promise<void> =>
     try {
 
         await client.query('CALL SP_REGISTRAR_OC($1,$2)', [run, oc])
+        notifyStudents(io, `Verifica tu orden de compra!`)
         res.status(201).json({ message: 'Orden registrada' })
 
     } catch (error: any) {
@@ -386,7 +387,8 @@ export const registrarAllOC = async (req: Request, res: Response): Promise<void>
     try {
         for (let oc of datosAProcesar) {
             await client.query('CALL SP_REGISTRAR_OC($1,$2)', [oc["RUT Alumno"], oc["N° OC"]])
-        } 
+        }
+        notifyStudents(io, `Se han registrado las órdenes de compra!`)
         res.status(201).json({ message: 'Orden registrada' })
 
     } catch (error: any) {
@@ -396,6 +398,11 @@ export const registrarAllOC = async (req: Request, res: Response): Promise<void>
         client.release()
     }
 
+}
+
+export const notificarRechazoActividad = async (req: Request, res: Response): Promise<void> => {
+    notifyStudents(io, `Tu solicitud ha sido rechazada!`)
+    res.status(400).json({ message: 'Notificación enviada' })
 }
 
 

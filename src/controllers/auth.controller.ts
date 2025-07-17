@@ -48,6 +48,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             secure: true,
             sameSite: 'none',
         })
+        
         res.status(200).json({ tipo_usuario_id: usuario.tipo_usuario_id })
 
 

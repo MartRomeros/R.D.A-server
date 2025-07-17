@@ -69,7 +69,7 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
         await client.query('CALL SP_REGISTRAR_ACTIVIDAD($1,$2,$3,$4,$5)',
             [fecha_actividad, hora_inic_activdad, hora_term_actividad, area_trabajo, usuario.run])
 
-        notifyAdmins(io, `Nueva actividad registrada: Fecha: ${fecha_actividad} Alumno: ${usuario.nombre} ${usuario.apellido_paterno}`)
+        notifyAdmins(io, `Nueva actividad registrada: Alumno: ${usuario.nombre} ${usuario.apellido_paterno}`)
 
         res.status(201).json({ message: 'Actividad registrada' })
 
