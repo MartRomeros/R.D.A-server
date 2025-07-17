@@ -49,6 +49,9 @@ export const updatePassword = async (req: Request, res: Response): Promise<void>
         const authHeader = req.headers['authorization'];
         token = authHeader && authHeader.split(' ')[1];
     }
+
+    console.log('token', token)
+
     const email = traerMailDelToken(token)
     const { newPassword } = req.body
 
