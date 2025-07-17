@@ -8,7 +8,18 @@ import { pool } from "../app"
 
 //Obtener el usuario por el email
 export const traerUsuarioMail = async (req: Request, res: Response): Promise<void> => {
-    let token = req.cookies.token
+    const cookieToken = req.cookies.token;
+    const authHeader = req.get('Authorization'); // <- mejor que req.headers['authorization']
+    const headerToken = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+
+    let token = cookieToken || headerToken;
+
+    console.log('--- TOKEN CHECK ---');
+    console.log('Cookie token:', cookieToken);
+    console.log('Authorization header:', authHeader);
+    console.log('Final token used:', token);
+    console.log('-------------------');
+
     if (!token) {
         const authHeader = req.headers['authorization'];
         token = authHeader && authHeader.split(' ')[1];
