@@ -29,27 +29,13 @@ export const authenticatedToken = (req: Request, res: Response, next: NextFuncti
     const authHeader = req.get('Authorization'); // <- mejor que req.headers['authorization']
     const headerToken = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
     let token = cookieToken || headerToken;
-    console.log('--- TOKEN CHECK ---');
-    console.log('Cookie token:', cookieToken);
-    console.log('Authorization header:', authHeader);
-    console.log('Final token used:', token);
-    console.log('-------------------');
-    console.log('--- TOKEN CHECK ---');
-    console.log('RUTA:', req.method, req.originalUrl);
-    console.log('Cookie token:', cookieToken);
-    console.log('Authorization header:', authHeader);
-    console.log('Final token used:', token);
-    console.log('-------------------');
 
     if (!token) {
         const authHeader = req.headers['authorization'];
         token = authHeader && authHeader.split(' ')[1];
     }
 
-    console.log('token', token)
-
     if (!token) {
-        console.log('no token provided')
         res.status(401).json({ message: 'no autorizado!' })
         return
     }

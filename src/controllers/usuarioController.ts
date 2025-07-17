@@ -14,16 +14,11 @@ export const traerUsuarioMail = async (req: Request, res: Response): Promise<voi
 
     let token = cookieToken || headerToken;
 
-    console.log('--- TOKEN CHECK ---');
-    console.log('Cookie token:', cookieToken);
-    console.log('Authorization header:', authHeader);
-    console.log('Final token used:', token);
-    console.log('-------------------');
-
     if (!token) {
         const authHeader = req.headers['authorization'];
         token = authHeader && authHeader.split(' ')[1];
     }
+    
     const email = traerMailDelToken(token)
 
     if (!email) {
