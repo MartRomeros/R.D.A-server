@@ -52,8 +52,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
         res.status(200).json({ tipo_usuario_id: usuario.tipo_usuario_id, token })
 
-        const authHeader = req.headers['authorization'];
-        const token1 = authHeader && authHeader.split(' ')[1];
+        const authHeader = req.get('Authorization'); // <-- mejor práctica
+        const token1 = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
         console.log('Token desde el header:', token1);
 
 
