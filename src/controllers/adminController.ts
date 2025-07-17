@@ -7,8 +7,13 @@ import { notifyStudents } from "../sockets/socketManager";
 
 export const traerSolicitudesMesArea = async (req: Request, res: Response): Promise<void> => {
 
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
+
 
     if (!email) {
 
@@ -47,7 +52,11 @@ export const traerSolicitudesMesArea = async (req: Request, res: Response): Prom
 }
 
 export const traerSolicitudActualizar = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
     const solicitudId = parseInt(req.params.id)
 
@@ -89,7 +98,6 @@ export const traerSolicitudActualizar = async (req: Request, res: Response): Pro
 }
 
 export const aprobarSolicitud = async (req: Request, res: Response): Promise<void> => {
-
     const solicitudId = parseInt(req.params.id)
     const client = await pool.connect()
 
@@ -113,7 +121,11 @@ export const aprobarSolicitud = async (req: Request, res: Response): Promise<voi
 }
 
 export const traerSolicitudes = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
 
     if (!email) {
@@ -153,7 +165,11 @@ export const traerSolicitudes = async (req: Request, res: Response): Promise<voi
 }
 
 export const traerResumenMes = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
 
     if (!email) {
@@ -217,7 +233,11 @@ export const traerAlumnosAyudantes = async (req: Request, res: Response): Promis
 }
 
 export const traerInfoAlumno = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
     const run = req.params.run
 
@@ -258,7 +278,11 @@ export const traerInfoAlumno = async (req: Request, res: Response): Promise<void
 }
 
 export const traerActividadesAlumno = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
     const run = req.params.run
 
@@ -299,7 +323,11 @@ export const traerActividadesAlumno = async (req: Request, res: Response): Promi
 }
 
 export const traerDetallesAlumnos = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
     let totalesAlumnos = []
 

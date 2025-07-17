@@ -24,7 +24,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     const client = await pool.connect()
     try {
-        
+
 
         const results = await client.query('SELECT FN_TRAER_USUARIO($1)', [email])
 
@@ -50,17 +50,13 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             maxAge: 24 * 60 * 60 * 1000
         })
 
-        console.log('Cookie enviada con options secure y sameSite none');
-        const token1 = req.cookies.token || ''
-        console.log('Token del usuario:', token1)
-        
-        res.status(200).json({ tipo_usuario_id: usuario.tipo_usuario_id })
+        res.status(200).json({ tipo_usuario_id: usuario.tipo_usuario_id, token })
 
 
     } catch (error: any) {
         res.status(500).json({ message: 'error 501' })
         console.log(error)
-    } finally{
+    } finally {
         client.release()
     }
 
@@ -103,7 +99,7 @@ export const recuperarClave = async (req: Request, res: Response): Promise<void>
 
         const password: string = usuario.apellido_paterno[0].toLocaleUpperCase() + usuario.run
         const hashedPassword: string = await hashPassword(password)
-        await client.query('CALL SP_ACTUALIZAR_PSSWD($1,$2)',[email,hashedPassword])
+        await client.query('CALL SP_ACTUALIZAR_PSSWD($1,$2)', [email, hashedPassword])
 
         const mensaje = generarMailContrasena()
 
@@ -141,7 +137,7 @@ export const registrar = async (req: Request, res: Response): Promise<void> => {
 
         const hashedPassword = await hashPassword(passwordProvisoria)
 
-        await client.query('CALL SP_REGISTRAR($1,$2,$3,$4,$5,$6,$7,$8,$9)', 
+        await client.query('CALL SP_REGISTRAR($1,$2,$3,$4,$5,$6,$7,$8,$9)',
             [run, nombre, apellidoPaterno, apellidoMaterno, fono, email, hashedPassword, tipoUsuario, areaTrabajoId])
 
         res.status(201).json({ message: 'usuario creado' })

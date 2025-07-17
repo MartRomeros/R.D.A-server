@@ -11,7 +11,11 @@ import { notifyAdmins } from "../sockets/socketManager"
 //REGISTRAR ACTIVIDAD
 export const registrarActividad = async (req: Request, res: Response): Promise<void> => {
 
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
 
     const { fecha_actividad, hora_inic_activdad, hora_term_actividad, area_trabajo } = req.body
@@ -50,13 +54,13 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
             OR
             FECHA_ACTIVIDAD = $3 AND
             $4 BETWEEN HORA_INIC_ACTIVDAD AND HORA_TERM_ACTIVIDAD
-            `, [formatted,horaInicio,formatted,horaFin])
-        const registros:Actividad[] = registrosResults.rows
-        if(registros.length !== 0){
-            res.status(400).json({message:'Ya existen registros dentro de ese rango de horas'})
+            `, [formatted, horaInicio, formatted, horaFin])
+        const registros: Actividad[] = registrosResults.rows
+        if (registros.length !== 0) {
+            res.status(400).json({ message: 'Ya existen registros dentro de ese rango de horas' })
             return
         }
-        
+
 
         const results = await client.query('SELECT FN_TRAER_USUARIO($1)', [email])
 
@@ -85,7 +89,11 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
 //TRAER HORAS POR AREA Y MES ACTUAL
 export const traerHorasAreaMesActual = async (req: Request, res: Response): Promise<void> => {
 
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
 
     if (!email) {
@@ -122,7 +130,11 @@ export const traerHorasAreaMesActual = async (req: Request, res: Response): Prom
 //TRAER HORAS TOTALES POR MES ACTUAL
 export const traerResumenMes = async (req: Request, res: Response): Promise<void> => {
 
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
 
     if (!email) {
@@ -165,7 +177,11 @@ export const traerResumenMes = async (req: Request, res: Response): Promise<void
 //TRAER HORAS TOTALES POR MES PUEDE SER NULO O CUALQUIER MES
 export const traerHorasAreaMes = async (req: Request, res: Response): Promise<void> => {
 
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
 
     const rawFecha = req.params.mes;
@@ -214,7 +230,11 @@ export const traerHorasAreaMes = async (req: Request, res: Response): Promise<vo
 //TRAER ACTIVIDADES POR AREA Y MES
 export const traerActividadesAreaMes = async (req: Request, res: Response): Promise<void> => {
 
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
 
     let { mesYanio, area } = req.query;

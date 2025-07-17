@@ -8,7 +8,11 @@ import { pool } from "../app"
 
 //Obtener el usuario por el email
 export const traerUsuarioMail = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
 
     if (!email) {
@@ -28,21 +32,25 @@ export const traerUsuarioMail = async (req: Request, res: Response): Promise<voi
             return
         }
 
-        res.status(200).json({ tipo_usuario_id: usuario.tipo_usuario_id,usuario })
+        res.status(200).json({ tipo_usuario_id: usuario.tipo_usuario_id, usuario })
 
     } catch (error: any) {
         res.status(500).json({ message: 'error 501' })
         console.log(error)
-    } finally{
+    } finally {
         client.release()
     }
 
 }
 
 export const updatePassword = async (req: Request, res: Response): Promise<void> => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
     const email = traerMailDelToken(token)
-    const {newPassword} = req.body
+    const { newPassword } = req.body
 
     if (!email) {
         res.status(400).json({ message: 'email es obligatorio!' })
@@ -62,14 +70,14 @@ export const updatePassword = async (req: Request, res: Response): Promise<void>
         }
 
         const hashedPassword = await hashPassword(newPassword)
-        await client.query('CALL SP_UPDATE_NEW_PASS($1,$2)',[hashedPassword,usuario.email])
-        
-        res.status(200).json({message:'contraseña actualizada'})
+        await client.query('CALL SP_UPDATE_NEW_PASS($1,$2)', [hashedPassword, usuario.email])
+
+        res.status(200).json({ message: 'contraseña actualizada' })
 
     } catch (error: any) {
         res.status(500).json({ message: 'error 501' })
         console.log(error)
-    } finally{
+    } finally {
         client.release()
     }
 

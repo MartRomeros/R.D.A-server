@@ -25,7 +25,12 @@ export const generateToken = (usuario: Usuario): string => {
 
 //MIDDLEWARE PARA MANEJAR PETICIONES (JWT)
 export const authenticatedToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.token
+    let token = req.cookies.token
+    if (!token) {
+        const authHeader = req.headers['authorization'];
+        token = authHeader && authHeader.split(' ')[1];
+    }
+
     if (!token) {
         res.status(401).json({ message: 'no autorizado!' })
         return
