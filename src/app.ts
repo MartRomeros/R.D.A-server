@@ -22,7 +22,7 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.use(cors({
-    origin: true,
+    origin: ['http://localhost:4200', 'https://rda-registro.cl'],
     methods: ['GET', 'POST', 'PUT'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -36,9 +36,9 @@ export const pool = new Pool({
     port: parseInt(process.env.PG_PORT || '5432'),
     max: 100,
     connectionString: process.env.DATABASE_URL,
-    /*ssl: {
+    ssl: {
         rejectUnauthorized: false, // Acepta certificados autofirmados (en producción puedes usar certificados válidos)
-    }*/
+    }
 })
 
 
