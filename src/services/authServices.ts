@@ -25,7 +25,22 @@ export const generateToken = (usuario: Usuario): string => {
 
 //MIDDLEWARE PARA MANEJAR PETICIONES (JWT)
 export const authenticatedToken = (req: Request, res: Response, next: NextFunction) => {
-    let token = req.cookies.token
+    const cookieToken = req.cookies.token;
+    const authHeader = req.get('Authorization'); // <- mejor que req.headers['authorization']
+    const headerToken = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+    let token = cookieToken || headerToken;
+    console.log('--- TOKEN CHECK ---');
+    console.log('Cookie token:', cookieToken);
+    console.log('Authorization header:', authHeader);
+    console.log('Final token used:', token);
+    console.log('-------------------');
+    console.log('--- TOKEN CHECK ---');
+    console.log('RUTA:', req.method, req.originalUrl);
+    console.log('Cookie token:', cookieToken);
+    console.log('Authorization header:', authHeader);
+    console.log('Final token used:', token);
+    console.log('-------------------');
+
     if (!token) {
         const authHeader = req.headers['authorization'];
         token = authHeader && authHeader.split(' ')[1];
