@@ -9,8 +9,9 @@ const httpServer:any = http.createServer(app)
 
 const io = new Server(httpServer, {
     cors: {
-        origin: true,
-        credentials: true
+        origin: ['https://rda-registro.cl','http://localhost:4200'],
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE']
     }
 })
 
