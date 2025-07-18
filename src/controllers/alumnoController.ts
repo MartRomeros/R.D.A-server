@@ -37,6 +37,14 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
     const client = await pool.connect()
 
     try {
+        
+        const results = await client.query('SELECT FN_TRAER_USUARIO($1)', [email])
+
+        const usuario: Usuario = results.rows[0].fn_traer_usuario
+        if (!usuario) {
+            res.status(404).json({ message: 'usuario no encontrado' })
+            return
+        }
 
         //validar horas
         const date = new Date(fecha_actividad);
@@ -54,19 +62,11 @@ export const registrarActividad = async (req: Request, res: Response): Promise<v
             OR
             FECHA_ACTIVIDAD = $3 AND
             $4 BETWEEN HORA_INIC_ACTIVDAD AND HORA_TERM_ACTIVIDAD
-            `, [formatted, horaInicio, formatted, horaFin])
+            AND RUN_ALUMNO = $5
+            `, [formatted, horaInicio, formatted, horaFin,usuario.run])
         const registros: Actividad[] = registrosResults.rows
         if (registros.length !== 0) {
             res.status(400).json({ message: 'Ya existen registros dentro de ese rango de horas' })
-            return
-        }
-
-
-        const results = await client.query('SELECT FN_TRAER_USUARIO($1)', [email])
-
-        const usuario: Usuario = results.rows[0].fn_traer_usuario
-        if (!usuario) {
-            res.status(404).json({ message: 'usuario no encontrado' })
             return
         }
 
